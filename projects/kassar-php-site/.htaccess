@@ -1,0 +1,15 @@
+# Optional: nicer URLs. Safe to delete this file if your host has no
+# mod_rewrite — every page also works via its plain .php URL.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # /brands/some-brand-slug -> brand.php?slug=some-brand-slug
+  RewriteRule ^brands/([a-zA-Z0-9-]+)/?$ brand.php?slug=$1 [L,QSA]
+</IfModule>
+
+# Never serve enquiry logs or other files under storage/ directly.
+<IfModule mod_authz_core.c>
+  <Directory "storage">
+    Require all denied
+  </Directory>
+</IfModule>
