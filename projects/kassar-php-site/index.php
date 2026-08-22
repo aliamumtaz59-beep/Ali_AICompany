@@ -53,15 +53,6 @@ $twoSides = [
 
     <div class="hero-visual">
       <div class="hero-visual__ring"></div>
-      <div class="hero-visual__globe">
-        <svg viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="#cea166" stroke-width="0.6" />
-          <ellipse cx="50" cy="50" rx="20" ry="46" fill="none" stroke="#cea166" stroke-width="0.5" />
-          <ellipse cx="50" cy="50" rx="46" ry="20" fill="none" stroke="#cea166" stroke-width="0.5" />
-          <line x1="4" y1="50" x2="96" y2="50" stroke="#cea166" stroke-width="0.5" />
-          <line x1="50" y1="4" x2="50" y2="96" stroke="#cea166" stroke-width="0.5" />
-        </svg>
-      </div>
       <div class="hero-visual__dashed"></div>
       <div class="hero-visual__core">
         <div class="hero-visual__core-circle">
