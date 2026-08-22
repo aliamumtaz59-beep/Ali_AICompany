@@ -1,6 +1,6 @@
-# Kassar — PHP site
+# Armadio — PHP site
 
-A plain PHP + HTML/CSS/JS conversion of the original Next.js/React "Kassar"
+A plain PHP + HTML/CSS/JS conversion of the original Next.js/React "Armadio"
 trading-platform site. No build step, no framework — just PHP includes for
 shared layout/data and vanilla JS for interactivity.
 

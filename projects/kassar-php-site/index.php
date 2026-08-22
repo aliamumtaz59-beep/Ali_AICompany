@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Kassar — Source. Purchase. Supply. Shop.';
-$page_description = "Kassar is a unified B2B and B2C trading platform — buy in bulk as a wholesale partner, or shop retail as a customer, all in one place.";
+$page_title = 'Armadio — Source. Purchase. Supply. Shop.';
+$page_description = "Armadio is a unified B2B and B2C trading platform — buy in bulk as a wholesale partner, or shop retail as a customer, all in one place.";
 require __DIR__ . '/includes/header.php';
 
 $marqueeItems = ["SOURCE", "PURCHASE", "SUPPLY", "SHOP"];
@@ -37,7 +37,7 @@ $twoSides = [
     <div>
       <span class="hero__badge">Trade &amp; Retail, Unified</span>
       <h1 class="hero__title">One trading platform.<br><span class="italic text-amber-light">Two ways to buy.</span></h1>
-      <p class="hero__lede">Whether you're stocking a warehouse or filling a basket, Kassar puts the same vetted brands within reach — bulk pricing for trade accounts, simple checkout for everyone else.</p>
+      <p class="hero__lede">Whether you're stocking a warehouse or filling a basket, Armadio puts the same vetted brands within reach — bulk pricing for trade accounts, simple checkout for everyone else.</p>
       <div class="hero__actions">
         <?= render_button('Buy in Bulk (B2B)', '/buy-in-bulk.php', 'primary') ?>
         <?= render_button('Shop Retail (B2C)', '/shop.php', 'secondary') ?>
@@ -57,7 +57,7 @@ $twoSides = [
 <section class="section bg-ivory">
   <div class="container">
     <div class="reveal">
-      <?= render_section_heading('Two sides, one platform', "However you trade, Kassar has a lane for you.", "Whether you're stocking a warehouse or filling a basket, the same vetted brands and supply chain stand behind every order.") ?>
+      <?= render_section_heading('Two sides, one platform', "However you trade, Armadio has a lane for you.", "Whether you're stocking a warehouse or filling a basket, the same vetted brands and supply chain stand behind every order.") ?>
     </div>
 
     <div class="two-sides__grid">
@@ -95,7 +95,7 @@ $twoSides = [
 <section class="section bg-ivory">
   <div class="container">
     <div class="reveal section-flex-header">
-      <?= render_section_heading('Categories', 'Built around the categories that move.', 'A snapshot of the trading categories Kassar specialises in — each backed by vetted brands ready for bulk or retail.') ?>
+      <?= render_section_heading('Categories', 'Built around the categories that move.', 'A snapshot of the trading categories Armadio specialises in — each backed by vetted brands ready for bulk or retail.') ?>
       <?= render_button('View all categories', '/categories.php', 'ghost') ?>
     </div>
 

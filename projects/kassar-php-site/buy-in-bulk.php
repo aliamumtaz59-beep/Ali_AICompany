@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Buy in Bulk | Kassar';
-$page_description = 'Request a wholesale quote from Kassar for palletised, bulk and trade-account orders across our brand network.';
+$page_title = 'Buy in Bulk | Armadio';
+$page_description = 'Request a wholesale quote from Armadio for palletised, bulk and trade-account orders across our brand network.';
 require __DIR__ . '/includes/header.php';
 
 $bulkFields = [

@@ -5,7 +5,7 @@ $footer_columns = [
     [
         'title' => 'Company',
         'links' => [
-            ['href' => '/about.php', 'label' => 'About Kassar'],
+            ['href' => '/about.php', 'label' => 'About Armadio'],
             ['href' => '/categories.php', 'label' => 'Categories'],
             ['href' => '/brands.php', 'label' => 'Our Brands'],
             ['href' => '/contact.php', 'label' => 'Contact'],
@@ -34,9 +34,9 @@ $footer_columns = [
       <div class="site-footer__brand-col">
         <a href="/index.php" class="site-header__brand">
           <span class="site-header__logo">
-            <img src="/assets/images/logo.svg" alt="Kassar logo" width="40" height="40">
+            <img src="/assets/images/logo.png" alt="Armadio logo" width="40" height="40">
           </span>
-          <span class="site-header__brand-name">Kassar</span>
+          <span class="site-header__brand-name">Armadio</span>
         </a>
         <p class="site-footer__blurb">One platform to source, purchase, supply and shop — connecting trade buyers and retail customers with vetted brands.</p>
       </div>

@@ -101,11 +101,11 @@ function render_cta_banner(?string $photo = null): string
         $html .= '<div class="cta-banner__photo"' . photo_style($photo) . '></div>';
     }
     $html .= '<div class="cta-banner__inner reveal">';
-    $html .= '<h2 class="cta-banner__title">Ready to <span class="italic text-amber-light">trade</span> with Kassar?</h2>';
+    $html .= '<h2 class="cta-banner__title">Ready to <span class="italic text-amber-light">trade</span> with Armadio?</h2>';
     $html .= '<p class="cta-banner__desc">Tell us whether you\'re buying in bulk, shopping retail, or looking to supply your own brand — we\'ll route you to the right team within one business day.</p>';
     $html .= '<div class="cta-banner__actions">';
     $html .= render_button('Contact Us', '/contact.php', 'primary');
-    $html .= render_button('Supply to Kassar', '/supply-to-us.php', 'secondary');
+    $html .= render_button('Supply to Armadio', '/supply-to-us.php', 'secondary');
     $html .= '</div></div></section>';
     return $html;
 }
@@ -155,7 +155,7 @@ function render_enquiry_form(string $type, array $fields, string $submitLabel = 
 
     $html .= '<div class="enquiry-success" data-enquiry-success hidden>';
     $html .= '<p class="enquiry-success__title">Thanks — your enquiry is in.</p>';
-    $html .= '<p class="enquiry-success__desc">A member of the Kassar team will be in touch within one business day.</p>';
+    $html .= '<p class="enquiry-success__desc">A member of the Armadio team will be in touch within one business day.</p>';
     $html .= '<button type="button" class="enquiry-success__again" data-enquiry-again>Submit another enquiry</button>';
     $html .= '</div>';
 

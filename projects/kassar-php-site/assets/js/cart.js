@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var STORAGE_KEY = "kassar-cart";
+  var STORAGE_KEY = "armadio-cart";
 
   function getCart() {
     try {
@@ -103,7 +103,7 @@
     }
   }
 
-  window.KassarCart = {
+  window.ArmadioCart = {
     getCart: getCart,
     addItem: addItem,
     removeItem: removeItem,

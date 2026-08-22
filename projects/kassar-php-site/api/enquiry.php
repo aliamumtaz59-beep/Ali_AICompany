@@ -56,7 +56,7 @@ if (!is_dir($storageDir)) {
 @file_put_contents(ENQUIRY_LOG, json_encode($entry) . PHP_EOL, FILE_APPEND | LOCK_EX);
 
 if (NOTIFY_EMAIL !== '') {
-    $subject = 'New Kassar enquiry: ' . $type;
+    $subject = 'New Armadio enquiry: ' . $type;
     $body = "New enquiry received\n\nType: {$type}\n\n";
     foreach ($payload as $key => $value) {
         $body .= "{$key}: {$value}\n";

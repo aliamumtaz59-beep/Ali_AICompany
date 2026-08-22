@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Contact | Kassar';
-$page_description = "Get in touch with Kassar — whether you're buying in bulk, supplying a brand, or shopping retail.";
+$page_title = 'Contact | Armadio';
+$page_description = "Get in touch with Armadio — whether you're buying in bulk, supplying a brand, or shopping retail.";
 require __DIR__ . '/includes/header.php';
 
 $modes = [

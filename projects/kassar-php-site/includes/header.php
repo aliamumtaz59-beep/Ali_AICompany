@@ -9,9 +9,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= e($page_title ?? 'Kassar — Source. Purchase. Supply. Shop.') ?></title>
-<meta name="description" content="<?= e($page_description ?? "Kassar is a unified B2B and B2C trading platform — buy in bulk as a wholesale partner, or shop retail as a customer, all in one place.") ?>">
-<link rel="icon" href="/assets/images/logo.svg">
+<title><?= e($page_title ?? 'Armadio — Source. Purchase. Supply. Shop.') ?></title>
+<meta name="description" content="<?= e($page_description ?? "Armadio is a unified B2B and B2C trading platform — buy in bulk as a wholesale partner, or shop retail as a customer, all in one place.") ?>">
+<link rel="icon" href="/assets/images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,9 +22,9 @@
   <div class="site-header__row">
     <a href="/index.php" class="site-header__brand">
       <span class="site-header__logo">
-        <img src="/assets/images/logo.svg" alt="Kassar logo" width="40" height="40">
+        <img src="/assets/images/logo.png" alt="Armadio logo" width="40" height="40">
       </span>
-      <span class="site-header__brand-name">Kassar</span>
+      <span class="site-header__brand-name">Armadio</span>
     </a>
 
     <nav class="site-header__nav">

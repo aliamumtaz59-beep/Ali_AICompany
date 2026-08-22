@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Supply to Us | Kassar';
-$page_description = 'Partner with Kassar as a brand or manufacturer and reach both wholesale buyers and retail shoppers through one platform.';
+$page_title = 'Supply to Us | Armadio';
+$page_description = 'Partner with Armadio as a brand or manufacturer and reach both wholesale buyers and retail shoppers through one platform.';
 require __DIR__ . '/includes/header.php';
 
 $supplyFields = [
@@ -21,7 +21,7 @@ $reasons = [
 ];
 ?>
 
-<?= render_page_header('B2B Partnership', 'Supply your brand through Kassar', 'Join a growing network of manufacturers and brands trading across power tools, beauty, grocery and lifestyle categories.', 'assets/images/photos/hero-supply-to-us.jpg') ?>
+<?= render_page_header('B2B Partnership', 'Supply your brand through Armadio', 'Join a growing network of manufacturers and brands trading across power tools, beauty, grocery and lifestyle categories.', 'assets/images/photos/hero-supply-to-us.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 72rem;">

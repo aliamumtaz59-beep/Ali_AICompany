@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Your Cart | Kassar';
-$page_description = 'Review items in your Kassar retail cart before checkout.';
+$page_title = 'Your Cart | Armadio';
+$page_description = 'Review items in your Armadio retail cart before checkout.';
 require __DIR__ . '/includes/header.php';
 ?>
 

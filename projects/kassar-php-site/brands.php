@@ -1,11 +1,11 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Brands | Kassar';
-$page_description = 'Explore the vetted brands trading through Kassar across power tools, beauty, grocery and lifestyle categories.';
+$page_title = 'Brands | Armadio';
+$page_description = 'Explore the vetted brands trading through Armadio across power tools, beauty, grocery and lifestyle categories.';
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?= render_page_header('Our Network', 'Brands trading on Kassar', "Every brand on Kassar is vetted for quality, compliance and reliable supply — whether you're buying a pallet or a single unit.", 'assets/images/photos/hero-brands.jpg') ?>
+<?= render_page_header('Our Network', 'Brands trading on Armadio', "Every brand on Armadio is vetted for quality, compliance and reliable supply — whether you're buying a pallet or a single unit.", 'assets/images/photos/hero-brands.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" data-brands-directory>

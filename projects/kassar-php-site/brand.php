@@ -6,7 +6,7 @@ $brand = get_brand_by_slug($brands, $slug);
 
 if (!$brand) {
     http_response_code(404);
-    $page_title = 'Brand not found | Kassar';
+    $page_title = 'Brand not found | Armadio';
     require __DIR__ . '/includes/header.php';
     ?>
     <section class="section bg-ivory">
@@ -21,7 +21,7 @@ if (!$brand) {
     exit;
 }
 
-$page_title = $brand['name'] . ' | Kassar';
+$page_title = $brand['name'] . ' | Armadio';
 $page_description = $brand['description'];
 require __DIR__ . '/includes/header.php';
 ?>

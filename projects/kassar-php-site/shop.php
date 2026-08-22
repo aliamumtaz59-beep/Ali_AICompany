@@ -1,11 +1,11 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Shop | Kassar';
-$page_description = "Shop retail quantities of Kassar's vetted brands — power tools, beauty, grocery and lifestyle goods, delivered to your door.";
+$page_title = 'Shop | Armadio';
+$page_description = "Shop retail quantities of Armadio's vetted brands — power tools, beauty, grocery and lifestyle goods, delivered to your door.";
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?= render_page_header('B2C Retail', 'Shop the Kassar collection', 'The same vetted brands sold wholesale, now available in everyday retail quantities with straightforward checkout.', 'assets/images/photos/hero-shop.jpg') ?>
+<?= render_page_header('B2C Retail', 'Shop the Armadio collection', 'The same vetted brands sold wholesale, now available in everyday retail quantities with straightforward checkout.', 'assets/images/photos/hero-shop.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container">

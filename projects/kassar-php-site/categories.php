@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
-$page_title = 'Categories | Kassar';
-$page_description = 'Discover the trading categories Kassar specialises in, from power tools to beauty, grocery and lifestyle goods.';
+$page_title = 'Categories | Armadio';
+$page_description = 'Discover the trading categories Armadio specialises in, from power tools to beauty, grocery and lifestyle goods.';
 require __DIR__ . '/includes/header.php';
 ?>
 
