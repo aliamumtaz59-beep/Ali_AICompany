@@ -13,12 +13,12 @@ require __DIR__ . '/includes/header.php';
       <?php foreach ($products as $product): ?>
         <div class="reveal">
           <div class="product-card">
-            <div class="product-card__media">
+            <a href="/product.php?slug=<?= e(urlencode($product['slug'])) ?>" class="product-card__media">
               <img src="/<?= e($product['image']) ?>" alt="<?= e($product['name']) ?>" loading="lazy">
-            </div>
+            </a>
             <div class="product-card__body">
               <span class="product-card__category"><?= e($product['category']) ?></span>
-              <h3 class="product-card__title"><?= e($product['name']) ?></h3>
+              <h3 class="product-card__title"><a href="/product.php?slug=<?= e(urlencode($product['slug'])) ?>"><?= e($product['name']) ?></a></h3>
               <p class="product-card__desc"><?= e($product['description']) ?></p>
               <div class="product-card__price">
                 <span class="product-card__price-now"><?= money($product['price']) ?></span>
