@@ -10,6 +10,19 @@ function money(float $amount): string
     return '£' . number_format($amount, 2);
 }
 
+/**
+ * Appends a cache-busting ?v=<mtime> query string to a root-relative asset
+ * path, so browsers/CDN caches (e.g. Hostinger's LiteSpeed Cache) fetch a
+ * fresh copy automatically whenever the file actually changes, instead of
+ * silently serving a stale cached version after a deploy.
+ */
+function asset_url(string $path): string
+{
+    $file = __DIR__ . '/../' . ltrim($path, '/');
+    $version = is_file($file) ? filemtime($file) : time();
+    return '/' . ltrim($path, '/') . '?v=' . $version;
+}
+
 function current_path(): string
 {
     $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);

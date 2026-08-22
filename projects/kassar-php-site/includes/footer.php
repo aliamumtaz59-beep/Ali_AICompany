@@ -83,7 +83,7 @@ $footer_columns = [
     <polyline points="5 12 12 5 19 12"></polyline>
   </svg>
 </button>
-<script src="/assets/js/cart.js"></script>
-<script src="/assets/js/main.js"></script>
+<script src="<?= e(asset_url('assets/js/cart.js')) ?>"></script>
+<script src="<?= e(asset_url('assets/js/main.js')) ?>"></script>
 </body>
 </html>

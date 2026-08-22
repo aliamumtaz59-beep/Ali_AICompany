@@ -202,4 +202,33 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
+
+  // Page transition: briefly dim+lift the page before navigating to another
+  // internal page, instead of an instant jump-cut. Never touches page-load
+  // timing (the incoming page always paints at full opacity from the
+  // start), so there is no flash risk — only the outgoing page animates.
+  var TRANSITION_MS = 180;
+  document.addEventListener("click", function (e) {
+    if (e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    var link = e.target.closest("a[href]");
+    if (!link) return;
+
+    var href = link.getAttribute("href");
+    if (!href || href.charAt(0) === "#") return;
+    if (link.target && link.target !== "" && link.target !== "_self") return;
+    if (link.hasAttribute("download")) return;
+    if (link.origin !== window.location.origin) return;
+
+    e.preventDefault();
+    document.body.classList.add("is-navigating");
+    window.setTimeout(function () {
+      window.location.href = link.href;
+    }, TRANSITION_MS);
+  });
+
+  window.addEventListener("pageshow", function () {
+    document.body.classList.remove("is-navigating");
+  });
 })();

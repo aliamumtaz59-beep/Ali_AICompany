@@ -1,14 +1,19 @@
 /* ==========================================================================
    Page transitions
    --------------------------------------------------------------------------
-   Native cross-document View Transitions for smooth navigation between
-   pages in supporting browsers (Chrome/Edge 111+) — uses the browser's own
-   default crossfade rather than custom keyframes, since that's the least
-   likely to visibly flash/jump. Unsupported browsers simply ignore this
-   and navigate instantly as before.
+   No native View Transition API — instead, internal link clicks are
+   intercepted in JS to briefly dim+lift the page before navigating away
+   (see main.js). This never risks a flash: the incoming page always loads
+   and paints normally (full opacity from the start), so there's nothing
+   for load-timing to race against — only the outgoing page's exit is
+   animated, and only down to partial opacity, never to fully blank.
    ========================================================================== */
-@view-transition {
-  navigation: auto;
+main {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+body.is-navigating main {
+  opacity: 0.55;
+  transform: translateY(6px);
 }
 
 /* ==========================================================================
