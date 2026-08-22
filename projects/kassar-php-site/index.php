@@ -7,6 +7,13 @@ require __DIR__ . '/includes/header.php';
 $marqueeItems = ["SOURCE", "PURCHASE", "SUPPLY", "SHOP"];
 $marqueeDoubled = array_merge($marqueeItems, $marqueeItems);
 
+$heroNodes = [
+    ["label" => "Sourcing", "x" => "12%", "y" => "18%", "delay" => "0s"],
+    ["label" => "Wholesale", "x" => "62%", "y" => "8%", "delay" => "0.6s"],
+    ["label" => "Retail", "x" => "68%", "y" => "56%", "delay" => "1.2s"],
+    ["label" => "Logistics", "x" => "10%", "y" => "64%", "delay" => "1.8s"],
+];
+
 $twoSides = [
     [
         "href" => "/buy-in-bulk.php",
@@ -33,7 +40,7 @@ $twoSides = [
 
 <section class="hero">
   <div class="hero__photo"<?= photo_style('assets/images/photos/hero-home.jpg') ?>></div>
-  <div class="hero__inner">
+  <div class="hero__inner hero__inner--split">
     <div>
       <span class="hero__badge">Trade &amp; Retail, Unified</span>
       <h1 class="hero__title">One trading platform.<br><span class="italic text-amber-light">Two ways to buy.</span></h1>
@@ -42,6 +49,38 @@ $twoSides = [
         <?= render_button('Buy in Bulk (B2B)', '/buy-in-bulk.php', 'primary') ?>
         <?= render_button('Shop Retail (B2C)', '/shop.php', 'secondary') ?>
       </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-visual__ring"></div>
+      <div class="hero-visual__globe">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#cea166" stroke-width="0.6" />
+          <ellipse cx="50" cy="50" rx="20" ry="46" fill="none" stroke="#cea166" stroke-width="0.5" />
+          <ellipse cx="50" cy="50" rx="46" ry="20" fill="none" stroke="#cea166" stroke-width="0.5" />
+          <line x1="4" y1="50" x2="96" y2="50" stroke="#cea166" stroke-width="0.5" />
+          <line x1="50" y1="4" x2="50" y2="96" stroke="#cea166" stroke-width="0.5" />
+        </svg>
+      </div>
+      <div class="hero-visual__dashed"></div>
+      <div class="hero-visual__core">
+        <div class="hero-visual__core-circle">
+          <div class="hero-visual__ping"></div>
+          <span class="hero-visual__core-label">A</span>
+        </div>
+      </div>
+      <?php foreach ($heroNodes as $node): ?>
+        <div class="hero-visual__node" style="left: <?= e($node['x']) ?>; top: <?= e($node['y']) ?>;">
+          <span class="hero-visual__dot" style="animation-delay: <?= e($node['delay']) ?>;"></span>
+          <span class="hero-visual__label"><?= e($node['label']) ?></span>
+        </div>
+      <?php endforeach; ?>
+      <svg class="hero-visual__lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <line x1="12" y1="18" x2="50" y2="50" stroke="#cea166" stroke-width="0.3" />
+        <line x1="62" y1="8" x2="50" y2="50" stroke="#cea166" stroke-width="0.3" />
+        <line x1="68" y1="56" x2="50" y2="50" stroke="#cea166" stroke-width="0.3" />
+        <line x1="10" y1="64" x2="50" y2="50" stroke="#cea166" stroke-width="0.3" />
+      </svg>
     </div>
   </div>
 </section>
