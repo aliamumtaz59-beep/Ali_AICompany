@@ -23,7 +23,7 @@ $perks = [
 ];
 ?>
 
-<?= render_page_header('B2B Wholesale', 'Buy in bulk, backed by a trusted network', 'Submit your requirements and our sourcing team will confirm pricing, MOQs and lead times — typically within one business day.') ?>
+<?= render_page_header('B2B Wholesale', 'Buy in bulk, backed by a trusted network', 'Submit your requirements and our sourcing team will confirm pricing, MOQs and lead times — typically within one business day.', 'assets/images/photos/hero-buy-in-bulk.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 72rem;">

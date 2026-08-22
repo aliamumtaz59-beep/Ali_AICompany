@@ -7,13 +7,6 @@ require __DIR__ . '/includes/header.php';
 $marqueeItems = ["SOURCE", "PURCHASE", "SUPPLY", "SHOP"];
 $marqueeDoubled = array_merge($marqueeItems, $marqueeItems);
 
-$heroNodes = [
-    ["label" => "Sourcing", "x" => "12%", "y" => "18%", "delay" => "0s"],
-    ["label" => "Wholesale", "x" => "62%", "y" => "8%", "delay" => "0.6s"],
-    ["label" => "Retail", "x" => "68%", "y" => "56%", "delay" => "1.2s"],
-    ["label" => "Logistics", "x" => "10%", "y" => "64%", "delay" => "1.8s"],
-];
-
 $twoSides = [
     [
         "href" => "/buy-in-bulk.php",
@@ -23,6 +16,7 @@ $twoSides = [
         "points" => ["Volume pricing", "Dedicated account manager", "Flexible lead times"],
         "cta" => "Start a bulk enquiry",
         "dark" => true,
+        "photo" => "assets/images/photos/two-sides-bulk.jpg",
     ],
     [
         "href" => "/shop.php",
@@ -32,11 +26,13 @@ $twoSides = [
         "points" => ["Single-unit pricing", "Curated collections", "Secure checkout"],
         "cta" => "Browse the shop",
         "dark" => false,
+        "photo" => "assets/images/photos/two-sides-retail.jpg",
     ],
 ];
 ?>
 
 <section class="hero">
+  <div class="hero__photo"<?= photo_style('assets/images/photos/hero-home.jpg') ?>></div>
   <div class="hero__inner">
     <div>
       <span class="hero__badge">Trade &amp; Retail, Unified</span>
@@ -46,29 +42,6 @@ $twoSides = [
         <?= render_button('Buy in Bulk (B2B)', '/buy-in-bulk.php', 'primary') ?>
         <?= render_button('Shop Retail (B2C)', '/shop.php', 'secondary') ?>
       </div>
-    </div>
-
-    <div class="hero-visual">
-      <div class="hero-visual__ring"></div>
-      <div class="hero-visual__dashed"></div>
-      <div class="hero-visual__core">
-        <div class="hero-visual__core-circle">
-          <div class="hero-visual__ping"></div>
-          <span class="hero-visual__core-label">K</span>
-        </div>
-      </div>
-      <?php foreach ($heroNodes as $node): ?>
-        <div class="hero-visual__node" style="left: <?= e($node['x']) ?>; top: <?= e($node['y']) ?>;">
-          <span class="hero-visual__dot" style="animation-delay: <?= e($node['delay']) ?>;"></span>
-          <span class="hero-visual__label"><?= e($node['label']) ?></span>
-        </div>
-      <?php endforeach; ?>
-      <svg class="hero-visual__lines" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <line x1="12" y1="18" x2="50" y2="50" stroke="#f2b25c" stroke-width="0.3" />
-        <line x1="62" y1="8" x2="50" y2="50" stroke="#f2b25c" stroke-width="0.3" />
-        <line x1="68" y1="56" x2="50" y2="50" stroke="#f2b25c" stroke-width="0.3" />
-        <line x1="10" y1="64" x2="50" y2="50" stroke="#f2b25c" stroke-width="0.3" />
-      </svg>
     </div>
   </div>
 </section>
@@ -91,6 +64,7 @@ $twoSides = [
       <?php foreach ($twoSides as $side): ?>
         <div class="reveal">
           <div class="side-card <?= $side['dark'] ? 'side-card--dark' : 'side-card--light' ?>">
+            <div class="side-card__photo"<?= photo_style($side['photo']) ?>></div>
             <span class="side-card__tag"><?= e($side['tag']) ?></span>
             <h3 class="side-card__title"><?= e($side['title']) ?></h3>
             <p class="side-card__description"><?= e($side['description']) ?></p>
@@ -129,7 +103,7 @@ $twoSides = [
       <?php foreach (array_slice($categories, 0, 3) as $category): ?>
         <div class="reveal">
           <a href="/categories.php#<?= e($category['slug']) ?>" class="category-card">
-            <div class="category-card__media <?= e($category['gradient']) ?>">
+            <div class="category-card__media <?= e($category['gradient']) ?>"<?= photo_style($category['photo']) ?>>
               <span class="category-card__stat"><?= e($category['stat']['value']) ?> <?= e($category['stat']['label']) ?></span>
             </div>
             <div class="category-card__body">
@@ -164,15 +138,6 @@ $twoSides = [
   </div>
 </section>
 
-<section class="cta-banner">
-  <div class="cta-banner__inner reveal">
-    <h2 class="cta-banner__title">Ready to <span class="italic text-amber-light">trade</span> with Kassar?</h2>
-    <p class="cta-banner__desc">Tell us whether you're buying in bulk, shopping retail, or looking to supply your own brand — we'll route you to the right team within one business day.</p>
-    <div class="cta-banner__actions">
-      <?= render_button('Contact Us', '/contact.php', 'primary') ?>
-      <?= render_button('Supply to Kassar', '/supply-to-us.php', 'secondary') ?>
-    </div>
-  </div>
-</section>
+<?= render_cta_banner('assets/images/photos/cta-banner.jpg') ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

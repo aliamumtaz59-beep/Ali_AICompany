@@ -5,14 +5,14 @@ $page_description = 'Discover the trading categories Kassar specialises in, from
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?= render_page_header('What we trade', 'Categories built for bulk and retail', 'Each category is backed by vetted manufacturers and brands, with flexible order sizes for wholesale accounts and retail shoppers alike.') ?>
+<?= render_page_header('What we trade', 'Categories built for bulk and retail', 'Each category is backed by vetted manufacturers and brands, with flexible order sizes for wholesale accounts and retail shoppers alike.', 'assets/images/photos/hero-categories.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 72rem;">
     <?php foreach ($categories as $i => $category): ?>
       <div class="reveal">
         <div id="<?= e($category['slug']) ?>" class="category-row<?= $i % 2 === 1 ? ' category-row--reverse' : '' ?>">
-          <div class="category-row__media <?= e($category['gradient']) ?>">
+          <div class="category-row__media <?= e($category['gradient']) ?>"<?= photo_style($category['photo']) ?>>
             <span class="category-row__stat"><?= e($category['stat']['value']) ?> <?= e($category['stat']['label']) ?></span>
           </div>
           <div class="category-row__content">

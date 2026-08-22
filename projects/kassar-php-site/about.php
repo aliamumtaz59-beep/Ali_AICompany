@@ -27,12 +27,16 @@ $stats = [
 ];
 ?>
 
-<?= render_page_header('About Kassar', 'Trading, made for both sides of the counter', "Kassar started with a simple observation: wholesale buyers and retail shoppers often want the same brands — just in different quantities. So we built one platform for both.") ?>
+<?= render_page_header('About Kassar', 'Trading, made for both sides of the counter', "Kassar started with a simple observation: wholesale buyers and retail shoppers often want the same brands — just in different quantities. So we built one platform for both.", 'assets/images/photos/hero-about.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 56rem;">
     <div class="reveal">
       <?= render_section_heading('Our Story', "Built by people who've sat on both sides of a purchase order", "Our founding team spent years sourcing for independent retailers and negotiating wholesale terms for growing brands. Kassar exists to remove the friction between the two — one sourcing pipeline, one quality bar, two ways to buy.") ?>
+    </div>
+
+    <div class="reveal" style="margin-top: 2.5rem;">
+      <div class="photo about-photo photo--warm"<?= photo_style('assets/images/photos/about-story.jpg') ?>></div>
     </div>
 
     <div class="grid grid--3">

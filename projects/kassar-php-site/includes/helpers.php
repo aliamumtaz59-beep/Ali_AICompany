@@ -49,15 +49,64 @@ function render_section_heading(?string $eyebrow, string $title, ?string $descri
     return $html;
 }
 
-function render_page_header(string $eyebrow, string $title, ?string $description = null): string
+/**
+ * Returns a `style="--photo-src:url('...')"` attribute value that points at
+ * a real photo path. Until a file exists at that path the browser simply
+ * can't paint that background layer, so the duotone/gradient layer beneath
+ * it (set in CSS) shows through instead of a broken-image icon. Drop a photo
+ * at the same path later (see README "Photo checklist") and it appears
+ * automatically — no code changes required.
+ */
+function photo_style(string $path, array $extraVars = []): string
 {
-    $html = '<section class="page-header"><div class="page-header__inner">';
+    $vars = ["--photo-src:url('" . e($path) . "')"];
+    foreach ($extraVars as $name => $value) {
+        $vars[] = e($name) . ':' . e($value);
+    }
+    return ' style="' . implode(';', $vars) . '"';
+}
+
+/** Maps a category name to one of the four duotone photo-fallback classes. */
+function category_duotone(string $category): string
+{
+    $map = [
+        'Power Tools & Trade Supplies' => 'photo--duotone-1',
+        'Beauty & Personal Care' => 'photo--duotone-2',
+        'Grocery & FMCG' => 'photo--duotone-3',
+        'Home & Lifestyle' => 'photo--duotone-4',
+    ];
+    return $map[$category] ?? 'photo--warm';
+}
+
+function render_page_header(string $eyebrow, string $title, ?string $description = null, ?string $photo = null): string
+{
+    $html = '<section class="page-header">';
+    if ($photo) {
+        $html .= '<div class="page-header__photo"' . photo_style($photo) . '></div>';
+    }
+    $html .= '<div class="page-header__inner">';
     $html .= '<span class="page-header__eyebrow">' . e($eyebrow) . '</span>';
     $html .= '<h1 class="page-header__title">' . e($title) . '</h1>';
     if ($description) {
         $html .= '<p class="page-header__description">' . e($description) . '</p>';
     }
     $html .= '</div></section>';
+    return $html;
+}
+
+function render_cta_banner(?string $photo = null): string
+{
+    $html = '<section class="cta-banner">';
+    if ($photo) {
+        $html .= '<div class="cta-banner__photo"' . photo_style($photo) . '></div>';
+    }
+    $html .= '<div class="cta-banner__inner reveal">';
+    $html .= '<h2 class="cta-banner__title">Ready to <span class="italic text-amber-light">trade</span> with Kassar?</h2>';
+    $html .= '<p class="cta-banner__desc">Tell us whether you\'re buying in bulk, shopping retail, or looking to supply your own brand — we\'ll route you to the right team within one business day.</p>';
+    $html .= '<div class="cta-banner__actions">';
+    $html .= render_button('Contact Us', '/contact.php', 'primary');
+    $html .= render_button('Supply to Kassar', '/supply-to-us.php', 'secondary');
+    $html .= '</div></div></section>';
     return $html;
 }
 

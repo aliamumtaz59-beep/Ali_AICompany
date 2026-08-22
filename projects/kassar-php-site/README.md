@@ -42,6 +42,47 @@ api/enquiry.php       — enquiry-form submission handler
 storage/              — enquiry submissions get appended here as JSON lines
 ```
 
+## Design
+
+The site uses a "Premium & Editorial" look — deep ink/charcoal panels, muted
+brass/gold accents, warm paper background, serif display headlines (Fraunces)
+with small-caps tracked labels, hairline rules instead of heavy shadows, and
+full-bleed photo bands on the hero, page headers, and other feature sections.
+
+### Photo checklist
+
+Real photos aren't included yet — every photo slot below currently shows a
+tasteful duotone gradient placeholder in the site's palette instead of a
+broken-image icon. **Drop a JPG at the exact path listed and it appears
+automatically** — no code changes needed. Recommended size in brackets.
+
+| Path (under `assets/images/photos/`)              | Used on                          | Size (approx.) |
+|-----------------------------------------------------|-----------------------------------|-----------------|
+| `hero-home.jpg`                                      | Homepage hero (full-bleed)        | 1920×1200       |
+| `two-sides-bulk.jpg`                                 | Homepage "Buy in Bulk" card       | 1200×1400       |
+| `two-sides-retail.jpg`                               | Homepage "Shop Retail" card       | 1200×1400       |
+| `cta-banner.jpg`                                     | "Ready to trade?" band (all pages)| 1920×900        |
+| `category-power-tools-trade-supplies.jpg`            | Category card/row                 | 1200×900        |
+| `category-beauty-personal-care.jpg`                  | Category card/row                 | 1200×900        |
+| `category-grocery-fmcg.jpg`                          | Category card/row                 | 1200×900        |
+| `category-home-lifestyle.jpg`                        | Category card/row                 | 1200×900        |
+| `hero-shop.jpg`                                      | Shop page header                  | 1920×900        |
+| `hero-categories.jpg`                                | Categories page header            | 1920×900        |
+| `hero-brands.jpg`                                    | Brands page header                | 1920×900        |
+| `hero-contact.jpg`                                   | Contact page header               | 1920×900        |
+| `hero-about.jpg`                                     | About page header                 | 1920×900        |
+| `hero-buy-in-bulk.jpg`                                | Buy in Bulk page header            | 1920×900        |
+| `hero-supply-to-us.jpg`                               | Supply to Us page header           | 1920×900        |
+| `about-story.jpg`                                    | About page, "Our Story"           | 1600×1000       |
+| `brand-<slug>.jpg` (one per brand, e.g. `brand-forgeline-tools.jpg`) | Brand card + brand detail hero | 1200×900 |
+
+Brand slugs: `forgeline-tools`, `ironclad-works`, `site-craft`, `lumen-skin`,
+`verdant-botanics`, `purelume`, `harvest-mill`, `brightwell-foods`,
+`coastal-pantry`, `homestead-goods`, `linden-loom`, `kestrel-home`.
+
+Product photos (shop page) are unrelated to this checklist and already work —
+they live in `assets/images/products/` and are wired up in `data/products.php`.
+
 ## What's carried over from the original site
 
 - All 9 pages, same content and copy.

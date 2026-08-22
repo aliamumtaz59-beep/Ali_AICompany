@@ -21,7 +21,7 @@ $reasons = [
 ];
 ?>
 
-<?= render_page_header('B2B Partnership', 'Supply your brand through Kassar', 'Join a growing network of manufacturers and brands trading across power tools, beauty, grocery and lifestyle categories.') ?>
+<?= render_page_header('B2B Partnership', 'Supply your brand through Kassar', 'Join a growing network of manufacturers and brands trading across power tools, beauty, grocery and lifestyle categories.', 'assets/images/photos/hero-supply-to-us.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 72rem;">

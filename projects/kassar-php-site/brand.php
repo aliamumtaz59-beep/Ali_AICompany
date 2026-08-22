@@ -27,6 +27,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="brand-hero">
+  <div class="brand-hero__photo"<?= photo_style($brand['photo']) ?>></div>
   <div class="brand-hero__inner">
     <a href="/brands.php" class="brand-hero__back">← Back to all brands</a>
 
@@ -51,33 +52,15 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <?php if (!empty($brand['image'])): ?>
-        <div class="brand-hero__media">
-          <div class="brand-hero__glow <?= e($brand['color']) ?>"></div>
-          <div class="brand-hero__frame">
-            <img src="/<?= e($brand['image']) ?>" alt="<?= e($brand['name']) ?>">
-          </div>
+      <div class="brand-hero__media">
+        <div class="brand-hero__frame photo <?= e(category_duotone($brand['category'])) ?>"<?= photo_style($brand['photo']) ?>>
+          <span class="brand-hero__mark <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
         </div>
-      <?php else: ?>
-        <div class="brand-hero__fallback">
-          <div class="brand-hero__fallback-ping <?= e($brand['color']) ?>"></div>
-          <div class="brand-hero__fallback-dashed"></div>
-          <span class="brand-hero__fallback-initials <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
-        </div>
-      <?php endif; ?>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="cta-banner">
-  <div class="cta-banner__inner reveal">
-    <h2 class="cta-banner__title">Ready to <span class="italic text-amber-light">trade</span> with Kassar?</h2>
-    <p class="cta-banner__desc">Tell us whether you're buying in bulk, shopping retail, or looking to supply your own brand — we'll route you to the right team within one business day.</p>
-    <div class="cta-banner__actions">
-      <?= render_button('Contact Us', '/contact.php', 'primary') ?>
-      <?= render_button('Supply to Kassar', '/supply-to-us.php', 'secondary') ?>
-    </div>
-  </div>
-</section>
+<?= render_cta_banner('assets/images/photos/cta-banner.jpg') ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -18,7 +18,7 @@ $brands = [
         "description" => "Cordless drills, impact drivers and site-ready fixings built for daily trade use.",
         "initials" => "FT",
         "color" => "brand-color-amber-600",
-        "image" => "assets/images/products/forgeline-18v-drill.png",
+        "photo" => "assets/images/photos/brand-forgeline-tools.jpg",
     ],
     [
         "slug" => "ironclad-works",
@@ -29,7 +29,7 @@ $brands = [
         "description" => "Heavy-duty workwear and PPE engineered for construction and industrial sites.",
         "initials" => "IW",
         "color" => "brand-color-navy-light",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-ironclad-works.jpg",
     ],
     [
         "slug" => "site-craft",
@@ -40,7 +40,7 @@ $brands = [
         "description" => "Fastening systems, adhesives and consumables for trade merchants.",
         "initials" => "SC",
         "color" => "brand-color-amber-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-site-craft.jpg",
     ],
     [
         "slug" => "lumen-skin",
@@ -51,7 +51,7 @@ $brands = [
         "description" => "Clinically-formulated skincare with recyclable packaging, made for retail shelves.",
         "initials" => "LS",
         "color" => "brand-color-rose-400",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-lumen-skin.jpg",
     ],
     [
         "slug" => "verdant-botanics",
@@ -62,7 +62,7 @@ $brands = [
         "description" => "Plant-based haircare ranges with compliant labelling for pharmacy and salon.",
         "initials" => "VB",
         "color" => "brand-color-emerald-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-verdant-botanics.jpg",
     ],
     [
         "slug" => "purelume",
@@ -73,7 +73,7 @@ $brands = [
         "description" => "Everyday grooming essentials with flexible case configurations.",
         "initials" => "PL",
         "color" => "brand-color-sky-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-purelume.jpg",
     ],
     [
         "slug" => "harvest-mill",
@@ -84,7 +84,7 @@ $brands = [
         "description" => "Ambient pantry staples — grains, oils and preserves — with reliable lead times.",
         "initials" => "HM",
         "color" => "brand-color-teal-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-harvest-mill.jpg",
     ],
     [
         "slug" => "brightwell-foods",
@@ -95,7 +95,7 @@ $brands = [
         "description" => "Packaged snacks and beverages built for independent and multiple retailers.",
         "initials" => "BF",
         "color" => "brand-color-amber-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-brightwell-foods.jpg",
     ],
     [
         "slug" => "coastal-pantry",
@@ -106,7 +106,7 @@ $brands = [
         "description" => "Chilled-stable seafood and deli goods distributed nationwide.",
         "initials" => "CP",
         "color" => "brand-color-navy-light",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-coastal-pantry.jpg",
     ],
     [
         "slug" => "homestead-goods",
@@ -117,7 +117,7 @@ $brands = [
         "description" => "Kitchenware and textiles designed for durability and everyday charm.",
         "initials" => "HG",
         "color" => "brand-color-rose-400",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-homestead-goods.jpg",
     ],
     [
         "slug" => "linden-loom",
@@ -128,7 +128,7 @@ $brands = [
         "description" => "Soft furnishings and home textiles curated for DTC storefronts.",
         "initials" => "LL",
         "color" => "brand-color-emerald-500",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-linden-loom.jpg",
     ],
     [
         "slug" => "kestrel-home",
@@ -139,7 +139,7 @@ $brands = [
         "description" => "Small furnishings and decor with consistent quality control at every batch.",
         "initials" => "KH",
         "color" => "brand-color-amber-600",
-        "image" => null,
+        "photo" => "assets/images/photos/brand-kestrel-home.jpg",
     ],
 ];
 

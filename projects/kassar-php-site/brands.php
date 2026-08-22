@@ -5,7 +5,7 @@ $page_description = 'Explore the vetted brands trading through Kassar across pow
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?= render_page_header('Our Network', 'Brands trading on Kassar', "Every brand on Kassar is vetted for quality, compliance and reliable supply — whether you're buying a pallet or a single unit.") ?>
+<?= render_page_header('Our Network', 'Brands trading on Kassar', "Every brand on Kassar is vetted for quality, compliance and reliable supply — whether you're buying a pallet or a single unit.", 'assets/images/photos/hero-brands.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" data-brands-directory>
@@ -30,19 +30,19 @@ require __DIR__ . '/includes/header.php';
           data-name="<?= e($brand['name']) ?>"
           data-description="<?= e($brand['description']) ?>"
         >
-          <div class="brand-card__head">
-            <span class="brand-card__avatar <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
-            <div>
-              <h3 class="brand-card__name"><?= e($brand['name']) ?></h3>
-              <p class="brand-card__origin"><?= e($brand['origin']) ?></p>
+          <div class="brand-card__media photo <?= e(category_duotone($brand['category'])) ?>"<?= photo_style($brand['photo']) ?>>
+            <span class="brand-card__avatar-overlay <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
+          </div>
+          <div class="brand-card__body">
+            <h3 class="brand-card__name"><?= e($brand['name']) ?></h3>
+            <p class="brand-card__origin"><?= e($brand['origin']) ?></p>
+            <p class="brand-card__desc"><?= e($brand['description']) ?></p>
+            <div class="brand-card__meta">
+              <span class="brand-card__cat"><?= e($brand['category']) ?></span>
+              <span class="brand-card__moq">MOQ: <?= e($brand['moq']) ?></span>
             </div>
+            <span class="brand-card__link">View brand →</span>
           </div>
-          <p class="brand-card__desc"><?= e($brand['description']) ?></p>
-          <div class="brand-card__meta">
-            <span class="brand-card__cat"><?= e($brand['category']) ?></span>
-            <span class="brand-card__moq">MOQ: <?= e($brand['moq']) ?></span>
-          </div>
-          <span class="brand-card__link">View brand →</span>
         </a>
       <?php endforeach; ?>
     </div>

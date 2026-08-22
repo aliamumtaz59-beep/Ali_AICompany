@@ -44,7 +44,7 @@ $enquiryTypeByMode = [
 ];
 ?>
 
-<?= render_page_header('Get in Touch', 'How can we help?', "Choose the option that best describes you and we'll route your message to the right team.") ?>
+<?= render_page_header('Get in Touch', 'How can we help?', "Choose the option that best describes you and we'll route your message to the right team.", 'assets/images/photos/hero-contact.jpg') ?>
 
 <section class="section bg-ivory">
   <div class="container" style="max-width: 48rem;">
