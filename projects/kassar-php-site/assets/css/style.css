@@ -2,19 +2,14 @@
    Page transitions
    --------------------------------------------------------------------------
    Native cross-document View Transitions for smooth navigation between
-   pages in supporting browsers (Chrome/Edge 111+). Unsupported browsers
-   simply ignore this and navigate instantly as before — no fallback code
-   needed. A plain fade-in below covers all browsers on first paint.
+   pages in supporting browsers (Chrome/Edge 111+) — uses the browser's own
+   default crossfade rather than custom keyframes, since that's the least
+   likely to visibly flash/jump. Unsupported browsers simply ignore this
+   and navigate instantly as before.
    ========================================================================== */
 @view-transition {
   navigation: auto;
 }
-::view-transition-old(root) { animation: page-fade-out 0.22s ease both; }
-::view-transition-new(root) { animation: page-fade-in 0.28s ease both; }
-@keyframes page-fade-out { to { opacity: 0; } }
-@keyframes page-fade-in { from { opacity: 0; transform: translateY(6px); } }
-
-@keyframes body-fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* ==========================================================================
    Armadio — design tokens ("Premium & Editorial")
@@ -66,7 +61,6 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
-  animation: body-fade-in 0.35s ease;
 }
 main { flex: 1 0 auto; padding-top: var(--header-height); }
 img { max-width: 100%; display: block; }
