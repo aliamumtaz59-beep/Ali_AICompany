@@ -231,4 +231,39 @@
   window.addEventListener("pageshow", function () {
     document.body.classList.remove("is-navigating");
   });
+
+  // Header slides away on scroll-down, slides back in on scroll-up.
+  var siteHeader = document.getElementById("site-header");
+  if (siteHeader) {
+    var lastScrollY = window.scrollY;
+    var hideThreshold = siteHeader.offsetHeight;
+    var ticking = false;
+
+    var updateHeader = function () {
+      var currentScrollY = window.scrollY;
+      var mobileOpen = toggle && toggle.getAttribute("aria-expanded") === "true";
+
+      if (mobileOpen || currentScrollY <= hideThreshold) {
+        siteHeader.classList.remove("is-hidden");
+      } else if (currentScrollY > lastScrollY) {
+        siteHeader.classList.add("is-hidden");
+      } else if (currentScrollY < lastScrollY) {
+        siteHeader.classList.remove("is-hidden");
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (!ticking) {
+          window.requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+  }
 })();

@@ -161,7 +161,10 @@ input, textarea { font: inherit; }
   background: rgba(22,19,15,0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  transform: translateY(0);
+  transition: transform 0.32s ease;
 }
+.site-header.is-hidden { transform: translateY(-100%); }
 .site-header__row {
   max-width: var(--container-max);
   margin-inline: auto;
