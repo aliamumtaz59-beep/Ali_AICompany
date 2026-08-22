@@ -74,14 +74,24 @@ automatically** — no code changes needed. Recommended size in brackets.
 | `hero-buy-in-bulk.jpg`                                | Buy in Bulk page header            | 1920×900        |
 | `hero-supply-to-us.jpg`                               | Supply to Us page header           | 1920×900        |
 | `about-story.jpg`                                    | About page, "Our Story"           | 1600×1000       |
-| `brand-<slug>.jpg` (one per brand, e.g. `brand-forgeline-tools.jpg`) | Brand card + brand detail hero | 1200×900 |
-
-Brand slugs: `forgeline-tools`, `ironclad-works`, `site-craft`, `lumen-skin`,
-`verdant-botanics`, `purelume`, `harvest-mill`, `brightwell-foods`,
-`coastal-pantry`, `homestead-goods`, `linden-loom`, `kestrel-home`.
 
 Product photos (shop page) are unrelated to this checklist and already work —
 they live in `assets/images/products/` and are wired up in `data/products.php`.
+
+### Brand logos
+
+Unlike the photo slots above, brand logos in `assets/images/brands/` and
+`data/brands.php` are **real trademarked logos**, not placeholders — supplied
+directly by the site owner for brands Armadio actually stocks (DeWalt,
+Makita, Milwaukee, L'Oréal, Bioderma, JOICO, Lee Kum Kee, Mae Ploy, NATCO,
+TRS). To add a brand, drop its official logo file into
+`assets/images/brands/` and add an entry to the `$brands` array in
+`data/brands.php` with the correct `slug`, `category`, `origin`, `moq` and
+`logo` path. Only use a brand's real logo if it's an actual stocked brand —
+using a company's trademark implies a business relationship with them.
+
+The "Home & Lifestyle" category currently has no brand assigned, so it shows
+an empty state on the Brands page until one is added.
 
 ## What's carried over from the original site
 

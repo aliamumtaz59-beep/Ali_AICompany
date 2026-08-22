@@ -1,16 +1,5 @@
 <?php
 
-$partners = [
-    "Forgeline Tools",
-    "Ironclad Works",
-    "Lumen Skin Co.",
-    "Harvest & Mill",
-    "Verdant Botanics",
-    "Brightwell Foods",
-    "Homestead Goods",
-    "Kestrel Home",
-];
-
 $nav_links = [
     ["href" => "/brands.php", "label" => "Brands"],
     ["href" => "/categories.php", "label" => "Categories"],

@@ -27,7 +27,6 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="brand-hero">
-  <div class="brand-hero__photo"<?= photo_style($brand['photo']) ?>></div>
   <div class="brand-hero__inner">
     <a href="/brands.php" class="brand-hero__back">← Back to all brands</a>
 
@@ -53,8 +52,8 @@ require __DIR__ . '/includes/header.php';
       </div>
 
       <div class="brand-hero__media">
-        <div class="brand-hero__frame photo <?= e(category_duotone($brand['category'])) ?>"<?= photo_style($brand['photo']) ?>>
-          <span class="brand-hero__mark <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
+        <div class="brand-hero__frame">
+          <img src="/<?= e($brand['logo']) ?>" alt="<?= e($brand['name']) ?> logo">
         </div>
       </div>
     </div>

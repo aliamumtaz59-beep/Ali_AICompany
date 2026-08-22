@@ -9,7 +9,7 @@ $bulkFields = [
     ['name' => 'contactName', 'label' => 'Contact Name', 'required' => true, 'span' => 'half'],
     ['name' => 'email', 'label' => 'Work Email', 'type' => 'email', 'required' => true, 'span' => 'half'],
     ['name' => 'phone', 'label' => 'Phone Number', 'type' => 'tel', 'span' => 'half'],
-    ['name' => 'brand', 'label' => 'Brand of Interest', 'placeholder' => 'e.g. Forgeline Tools', 'span' => 'half'],
+    ['name' => 'brand', 'label' => 'Brand of Interest', 'placeholder' => 'e.g. DeWalt', 'span' => 'half'],
     ['name' => 'product', 'label' => 'Product / SKU', 'placeholder' => 'e.g. 18V Combi Drill', 'span' => 'half'],
     ['name' => 'quantity', 'label' => 'Estimated Quantity', 'type' => 'number', 'required' => true, 'placeholder' => 'e.g. 500 units', 'span' => 'half'],
     ['name' => 'frequency', 'label' => 'Order Frequency', 'placeholder' => 'One-off / Monthly / Quarterly', 'span' => 'half'],

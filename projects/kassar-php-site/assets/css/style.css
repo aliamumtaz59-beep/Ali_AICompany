@@ -129,10 +129,6 @@ input, textarea { font: inherit; }
   position: absolute;
   inset: 0;
 }
-.photo--duotone-1 { background-image: var(--photo-src, none), linear-gradient(135deg, #6b5335, #241f18); }
-.photo--duotone-2 { background-image: var(--photo-src, none), linear-gradient(135deg, #7c6a4a, #1c1712); }
-.photo--duotone-3 { background-image: var(--photo-src, none), linear-gradient(135deg, #5c6b57, #1c1712); }
-.photo--duotone-4 { background-image: var(--photo-src, none), linear-gradient(135deg, #5f7480, #1c1712); }
 .photo--warm { background-image: var(--photo-src, none), linear-gradient(160deg, #4a3c26, #16130f); }
 
 /* ==========================================================================
@@ -320,9 +316,12 @@ input, textarea { font: inherit; }
    ========================================================================== */
 .partners-strip { border-top: var(--line); border-bottom: var(--line); background: #fff; padding-block: 2.75rem; }
 .partners-strip__label { text-align: center; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.24em; color: rgba(28,23,18,0.4); }
-.partners-strip__list { margin-top: 1.75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem 2.75rem; }
-.partners-strip__list span { font-family: var(--font-display); font-style: italic; font-size: 1.125rem; font-weight: 500; color: rgba(22,19,15,0.42); transition: color 0.2s ease; }
-.partners-strip__list span:hover { color: var(--color-navy); }
+.partners-strip__list { margin-top: 1.75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2rem 3rem; }
+.partners-strip__list img {
+  max-height: 34px; width: auto; max-width: 120px; object-fit: contain;
+  filter: grayscale(1); opacity: 0.55; transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.partners-strip__list img:hover { filter: grayscale(0); opacity: 1; }
 
 /* ==========================================================================
    Section heading
@@ -520,20 +519,12 @@ input, textarea { font: inherit; }
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .brand-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(22,19,15,0.1); }
-.brand-card__media { position: relative; height: 9rem; width: 100%; }
-.brand-card__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(22,19,15,0.4), transparent 60%); }
-.brand-card__avatar-overlay {
-  position: absolute; bottom: -1.25rem; left: 1.5rem; display: flex; align-items: center; justify-content: center;
-  width: 3rem; height: 3rem; border-radius: var(--radius); font-family: var(--font-display); font-size: 1.0625rem;
-  font-weight: 600; color: var(--color-ivory); border: 3px solid #fff; z-index: 1;
+.brand-card__logo-media {
+  display: flex; align-items: center; justify-content: center; height: 9rem; width: 100%;
+  background: var(--color-ivory-dim); padding: 1.75rem;
 }
-.brand-card__body { padding: 2rem 1.5rem 1.5rem; display: flex; flex: 1; flex-direction: column; }
-.brand-card__head { display: flex; align-items: center; gap: 1rem; }
-.brand-card__avatar {
-  display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem;
-  border-radius: var(--radius); font-family: var(--font-display); font-size: 1.0625rem; font-weight: 600; color: var(--color-ivory);
-  flex-shrink: 0;
-}
+.brand-card__logo-media img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.brand-card__body { padding: 1.75rem 1.5rem 1.5rem; display: flex; flex: 1; flex-direction: column; }
 .brand-card__name { font-size: 1.0625rem; font-weight: 500; color: var(--color-navy); }
 .brand-card__origin { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(28,23,18,0.48); }
 .brand-card__desc { margin-top: 1rem; flex: 1; font-size: 0.8125rem; line-height: 1.6; color: rgba(28,23,18,0.68); }
@@ -546,13 +537,9 @@ input, textarea { font: inherit; }
 /* ==========================================================================
    Brand detail page
    ========================================================================== */
-.brand-hero { position: relative; overflow: hidden; background: var(--color-navy); padding: 10rem 0 6rem; }
-.brand-hero__photo {
-  position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat;
-  background-image:
-    linear-gradient(180deg, rgba(22,19,15,0.4), rgba(22,19,15,0.95)),
-    var(--photo-src, none),
-    linear-gradient(135deg, #4a3c26, #16130f);
+.brand-hero {
+  position: relative; overflow: hidden; padding: 10rem 0 6rem;
+  background: linear-gradient(135deg, #4a3c26, #16130f 70%);
 }
 .brand-hero__inner { position: relative; max-width: var(--container-max); margin-inline: auto; padding-inline: 1.5rem; }
 .brand-hero__back { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-amber-light); }
@@ -572,20 +559,14 @@ input, textarea { font: inherit; }
 .brand-hero__fact-value { font-weight: 500; color: var(--color-ivory); }
 .brand-hero__actions { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem; }
 
-.brand-hero__media { position: relative; margin-inline: auto; height: 20rem; width: 100%; max-width: 32rem; }
-@media (min-width: 640px) { .brand-hero__media { height: 24rem; } }
+.brand-hero__media { position: relative; margin-inline: auto; height: 18rem; width: 100%; max-width: 28rem; }
+@media (min-width: 640px) { .brand-hero__media { height: 20rem; } }
 .brand-hero__frame {
-  position: relative; height: 100%; width: 100%; overflow: hidden; border-radius: var(--radius-lg);
-  border: 1px solid rgba(247,241,228,0.12);
-  transition: transform 0.4s ease;
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; width: 100%; border-radius: var(--radius-lg);
+  background: #fff; padding: 3rem; box-shadow: 0 20px 48px rgba(0,0,0,0.28);
 }
-.brand-hero__frame:hover { transform: scale(1.02); }
-.brand-hero__frame img { width: 100%; height: 100%; object-fit: cover; }
-.brand-hero__mark {
-  position: absolute; bottom: 1.5rem; left: 1.5rem; display: flex; align-items: center; justify-content: center;
-  width: 3.25rem; height: 3.25rem; border-radius: var(--radius); font-family: var(--font-display); font-size: 1.125rem;
-  font-weight: 600; color: var(--color-ivory); box-shadow: 0 6px 18px rgba(22,19,15,0.35);
-}
+.brand-hero__frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* ==========================================================================
    Cart page

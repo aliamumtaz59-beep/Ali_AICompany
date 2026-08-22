@@ -30,8 +30,8 @@ require __DIR__ . '/includes/header.php';
           data-name="<?= e($brand['name']) ?>"
           data-description="<?= e($brand['description']) ?>"
         >
-          <div class="brand-card__media photo <?= e(category_duotone($brand['category'])) ?>"<?= photo_style($brand['photo']) ?>>
-            <span class="brand-card__avatar-overlay <?= e($brand['color']) ?>"><?= e($brand['initials']) ?></span>
+          <div class="brand-card__logo-media">
+            <img src="/<?= e($brand['logo']) ?>" alt="<?= e($brand['name']) ?> logo" loading="lazy">
           </div>
           <div class="brand-card__body">
             <h3 class="brand-card__name"><?= e($brand['name']) ?></h3>

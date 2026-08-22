@@ -83,10 +83,10 @@ $twoSides = [
 
 <section class="partners-strip">
   <div class="container">
-    <p class="partners-strip__label">Trusted by brands across our trading network</p>
+    <p class="partners-strip__label">Brands we stock across our trading network</p>
     <div class="partners-strip__list">
-      <?php foreach ($partners as $partner): ?>
-        <span><?= e($partner) ?></span>
+      <?php foreach ($brands as $brand): ?>
+        <img src="/<?= e($brand['logo']) ?>" alt="<?= e($brand['name']) ?>" loading="lazy">
       <?php endforeach; ?>
     </div>
   </div>

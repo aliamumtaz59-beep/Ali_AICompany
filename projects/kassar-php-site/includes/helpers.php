@@ -66,18 +66,6 @@ function photo_style(string $path, array $extraVars = []): string
     return ' style="' . implode(';', $vars) . '"';
 }
 
-/** Maps a category name to one of the four duotone photo-fallback classes. */
-function category_duotone(string $category): string
-{
-    $map = [
-        'Power Tools & Trade Supplies' => 'photo--duotone-1',
-        'Beauty & Personal Care' => 'photo--duotone-2',
-        'Grocery & FMCG' => 'photo--duotone-3',
-        'Home & Lifestyle' => 'photo--duotone-4',
-    ];
-    return $map[$category] ?? 'photo--warm';
-}
-
 function render_page_header(string $eyebrow, string $title, ?string $description = null, ?string $photo = null): string
 {
     $html = '<section class="page-header">';
