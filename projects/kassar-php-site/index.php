@@ -62,7 +62,7 @@ $twoSides = [
       </div>
       <?php foreach ($heroNodes as $node): ?>
         <div class="hero-visual__node" style="left: <?= e($node['x']) ?>; top: <?= e($node['y']) ?>;">
-          <span class="hero-visual__dot" style="animation-delay: <?= e($node['delay']) ?>;"></span>
+          <span class="hero-visual__dot" style="--dot-delay: <?= e($node['delay']) ?>;"></span>
           <span class="hero-visual__label"><?= e($node['label']) ?></span>
         </div>
       <?php endforeach; ?>
