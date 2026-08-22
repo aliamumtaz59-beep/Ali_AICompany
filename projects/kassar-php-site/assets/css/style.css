@@ -1,4 +1,22 @@
 /* ==========================================================================
+   Page transitions
+   --------------------------------------------------------------------------
+   Native cross-document View Transitions for smooth navigation between
+   pages in supporting browsers (Chrome/Edge 111+). Unsupported browsers
+   simply ignore this and navigate instantly as before — no fallback code
+   needed. A plain fade-in below covers all browsers on first paint.
+   ========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) { animation: page-fade-out 0.22s ease both; }
+::view-transition-new(root) { animation: page-fade-in 0.28s ease both; }
+@keyframes page-fade-out { to { opacity: 0; } }
+@keyframes page-fade-in { from { opacity: 0; transform: translateY(6px); } }
+
+@keyframes body-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ==========================================================================
    Armadio — design tokens ("Premium & Editorial")
    ========================================================================== */
 :root {
@@ -48,6 +66,7 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  animation: body-fade-in 0.35s ease;
 }
 main { flex: 1 0 auto; padding-top: var(--header-height); }
 img { max-width: 100%; display: block; }
@@ -752,6 +771,14 @@ input, textarea { font: inherit; }
 .site-footer__grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
 @media (min-width: 768px) { .site-footer__grid { grid-template-columns: repeat(4, 1fr); } }
 .site-footer__blurb { margin-top: 1.125rem; max-width: 20rem; font-size: 0.875rem; line-height: 1.65; color: rgba(247,241,228,0.55); }
+.site-footer__social { margin-top: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.site-footer__social-link {
+  display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+  border-radius: 999px; border: 1px solid rgba(247,241,228,0.15); color: rgba(247,241,228,0.6);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.site-footer__social-link svg { width: 16px; height: 16px; }
+.site-footer__social-link:hover { color: var(--color-amber-light); border-color: rgba(206,161,102,0.5); background: rgba(206,161,102,0.08); }
 .site-footer__col-title { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.24em; color: var(--color-amber-light); }
 .site-footer__col-links { margin-top: 1.125rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .site-footer__col-links a { font-size: 0.875rem; color: rgba(247,241,228,0.65); transition: color 0.2s ease; }
@@ -769,3 +796,20 @@ input, textarea { font: inherit; }
    ========================================================================== */
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ==========================================================================
+   Back to top
+   ========================================================================== */
+.back-to-top {
+  position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 40;
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; border-radius: 999px;
+  background: var(--color-amber); color: var(--color-ivory); border: none; cursor: pointer;
+  box-shadow: 0 10px 24px rgba(22,19,15,0.35);
+  opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
+}
+.back-to-top.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.back-to-top:hover { background: var(--color-amber-light); }
+.back-to-top__icon { width: 20px; height: 20px; }
+@media (min-width: 640px) { .back-to-top { right: 2rem; bottom: 2rem; } }
