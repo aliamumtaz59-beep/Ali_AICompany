@@ -149,12 +149,12 @@
 
   function renderCartPage(root) {
     var emptyState = root.querySelector("[data-cart-empty]");
-    var successState = root.querySelector("[data-cart-success]");
     var filledState = root.querySelector("[data-cart-filled]");
     var itemsList = root.querySelector("[data-cart-items]");
     var subtotalEl = root.querySelector("[data-cart-subtotal]");
     var clearBtn = root.querySelector("[data-cart-clear]");
     var checkoutBtn = root.querySelector("[data-cart-checkout]");
+    var errorEl = root.querySelector("[data-cart-error]");
 
     function render() {
       var items = getCart();
@@ -162,7 +162,6 @@
       if (items.length === 0) {
         emptyState.hidden = false;
         filledState.hidden = true;
-        successState.hidden = true;
         return;
       }
 
@@ -223,8 +222,46 @@
 
     if (checkoutBtn) {
       checkoutBtn.addEventListener("click", function () {
-        filledState.hidden = true;
-        successState.hidden = false;
+        var items = getCart();
+        if (!items.length) return;
+
+        if (errorEl) {
+          errorEl.hidden = true;
+          errorEl.textContent = "";
+        }
+
+        var originalLabel = checkoutBtn.textContent;
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = "Redirecting to secure checkout…";
+
+        fetch("/api/checkout.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: items.map(function (item) {
+              return { slug: item.slug, quantity: item.quantity };
+            }),
+          }),
+        })
+          .then(function (res) {
+            return res.json().then(function (body) {
+              if (!res.ok || !body.url) {
+                throw new Error(body.error || "Could not start checkout. Please try again.");
+              }
+              return body;
+            });
+          })
+          .then(function (body) {
+            window.location.href = body.url;
+          })
+          .catch(function (err) {
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = originalLabel;
+            if (errorEl) {
+              errorEl.textContent = err.message || "Could not start checkout. Please try again.";
+              errorEl.hidden = false;
+            }
+          });
       });
     }
 

@@ -1,16 +1,6 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
-function get_product_by_slug(array $products, string $slug): ?array
-{
-    foreach ($products as $product) {
-        if ($product['slug'] === $slug) {
-            return $product;
-        }
-    }
-    return null;
-}
-
 $slug = $_GET['slug'] ?? '';
 $product = get_product_by_slug($products, $slug);
 

@@ -26,7 +26,61 @@ Composer install, no build step required.
   direct access to `storage/`. Safe to delete if your host doesn't run
   Apache/mod_rewrite — every page still works via its plain `.php` URL.
 - Make sure the `storage/` directory is writable by PHP (used to log
-  enquiry-form submissions to `storage/enquiries.log`).
+  enquiry-form submissions and paid orders to `storage/enquiries.log` /
+  `storage/orders.log`).
+
+## Payments — Stripe
+
+Checkout is wired up for real, live card payments via [Stripe
+Checkout](https://stripe.com/payments/checkout) — a Stripe-hosted payment
+page, so no card details ever touch this server (keeps you out of PCI
+scope). It's called directly over Stripe's REST API with cURL, no
+Composer/SDK required, matching the rest of this build.
+
+**1. Get your API keys**
+Sign up / log in at [dashboard.stripe.com](https://dashboard.stripe.com),
+switch on **Test mode** (top-right toggle) while you set things up, then go
+to **Developers → API keys** and copy the **Secret key** (`sk_test_...`).
+
+**2. Add it to the site**
+Open `includes/stripe-config.php` and paste it in:
+```php
+const STRIPE_SECRET_KEY = 'sk_test_...';
+```
+This file ships with empty placeholders and is meant to be edited directly
+on your server after upload — never commit real keys to version control.
+
+**3. Test it**
+With the secret key in place, add something to the cart and hit **Proceed
+to Checkout** — you'll be redirected to a real Stripe Checkout page. Pay
+with a [Stripe test card](https://docs.stripe.com/testing#cards), e.g.
+`4242 4242 4242 4242`, any future expiry date, any CVC and postcode. You'll
+land back on `checkout-success.php` with an order confirmation.
+
+**4. Set up the webhook (recommended before going live)**
+The redirect back to `checkout-success.php` is only for the customer's
+confirmation screen — if they close the tab or lose connection right after
+paying, that page never loads, even though Stripe took the payment. A
+webhook is the reliable way to record every paid order regardless:
+1. In the Stripe Dashboard, go to **Developers → Webhooks → Add endpoint**.
+2. Endpoint URL: `https://yourdomain.com/api/stripe-webhook.php`
+3. Event to send: `checkout.session.completed`.
+4. Copy the **Signing secret** (`whsec_...`) it gives you into
+   `includes/stripe-config.php` as `STRIPE_WEBHOOK_SECRET`.
+
+Every completed order then gets appended as JSON to `storage/orders.log`
+(session id, amount, currency, customer email, shipping address) —
+`storage/` is blocked from direct browser access via `.htaccess`.
+
+**5. Go live**
+Switch the Dashboard out of Test mode, swap `STRIPE_SECRET_KEY` for your
+`sk_live_...` key, and create a second webhook endpoint (same URL) while in
+live mode to get a live `whsec_...` — test-mode and live-mode webhook
+secrets are different.
+
+By default Checkout only offers card payments and collects a UK
+(`GB`) shipping address — both are adjustable in `api/checkout.php`
+(`payment_method_types` and `shipping_address_collection`).
 
 ## Structure
 
@@ -98,7 +152,8 @@ an empty state on the Brands page until one is added.
 - All 9 pages, same content and copy.
 - The retail cart (add to cart, quantity, remove, subtotal) — still
   client-side only, backed by the browser's `localStorage`, same as the
-  original React version. Checkout is a UI-only placeholder, same as before.
+  original React version. Checkout now takes real payments via Stripe (see
+  "Payments — Stripe" below).
 - The brand directory's category filter + search, and the contact page's
   three enquiry modes (buyer / supplier / retail).
 - The enquiry form now actually persists submissions server-side (appended

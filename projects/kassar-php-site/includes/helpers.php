@@ -23,6 +23,19 @@ function asset_url(string $path): string
     return '/' . ltrim($path, '/') . '?v=' . $version;
 }
 
+function site_base_url(): string
+{
+    $scheme = 'http';
+    if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? '') === '443') {
+        $scheme = 'https';
+    }
+    if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+        $scheme = explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0];
+    }
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    return $scheme . '://' . $host;
+}
+
 function current_path(): string
 {
     $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);

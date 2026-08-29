@@ -124,3 +124,13 @@ $products = [
         "image" => "assets/images/products/magic-water-elf.png",
     ],
 ];
+
+function get_product_by_slug(array $products, string $slug): ?array
+{
+    foreach ($products as $product) {
+        if ($product["slug"] === $slug) {
+            return $product;
+        }
+    }
+    return null;
+}
