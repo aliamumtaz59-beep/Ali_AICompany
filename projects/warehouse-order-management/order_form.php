@@ -96,7 +96,7 @@ require __DIR__ . '/includes/header.php';
     <div class="row g-3 mb-3">
       <div class="col-md-4">
         <label class="form-label">Order Number</label>
-        <input type="text" name="order_number" class="form-control" required value="<?= e($displayOrder['order_number']) ?>">
+        <input type="text" name="order_number" id="orderNumberInput" class="form-control" required value="<?= e($displayOrder['order_number']) ?>">
       </div>
       <div class="col-md-4">
         <label class="form-label">Order Date</label>
@@ -105,6 +105,14 @@ require __DIR__ . '/includes/header.php';
       <div class="col-md-4">
         <label class="form-label">Remarks</label>
         <input type="text" name="remarks" class="form-control" value="<?= e($displayOrder['remarks']) ?>">
+      </div>
+    </div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Order Barcode</label>
+        <div class="border rounded p-2 bg-white text-center">
+          <svg id="orderBarcode"></svg>
+        </div>
       </div>
     </div>
 
@@ -136,6 +144,7 @@ require __DIR__ . '/includes/header.php';
   </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.6/JsBarcode.all.min.js"></script>
 <script>
 var activeProducts = <?= json_encode(array_map(fn($p) => ['id'=>$p['id'],'product_code'=>$p['product_code'],'product_name'=>$p['product_name'],'unit'=>$p['unit']], $activeProducts)) ?>;
 document.getElementById('addLineBtn').addEventListener('click', function () {
@@ -146,10 +155,25 @@ document.querySelector('input[name="order_date"]').addEventListener('change', fu
   fetch('api/get_order_number.php?date=' + encodeURIComponent(this.value))
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      if (data.order_number) document.querySelector('input[name="order_number"]').value = data.order_number;
+      if (data.order_number) {
+        document.querySelector('input[name="order_number"]').value = data.order_number;
+        renderOrderBarcode();
+      }
     });
 });
 <?php endif; ?>
+
+function renderOrderBarcode() {
+  var value = document.getElementById('orderNumberInput').value.trim();
+  if (!value) return;
+  try {
+    JsBarcode('#orderBarcode', value, { format: 'CODE128', width: 2, height: 50, displayValue: true, fontSize: 14, margin: 5 });
+  } catch (e) {
+    document.getElementById('orderBarcode').innerHTML = '';
+  }
+}
+document.getElementById('orderNumberInput').addEventListener('input', renderOrderBarcode);
+renderOrderBarcode();
 </script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
