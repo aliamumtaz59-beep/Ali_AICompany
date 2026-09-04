@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Order.php';
+require_once __DIR__ . '/models/Attachment.php';
 require_login();
 
 $id = (int)($_GET['id'] ?? 0);
@@ -11,6 +12,7 @@ if (!$order) {
 }
 
 $totalQty = array_sum(array_column($order['items'], 'quantity'));
+$attachments = Attachment::forOrder($id);
 
 $pageTitle = 'Order ' . $order['order_number'];
 require __DIR__ . '/includes/header.php';
@@ -47,6 +49,25 @@ require __DIR__ . '/includes/header.php';
       <tr><th>Total</th><th class="text-end"><?= number_format($totalQty, 2) ?></th><th colspan="2"></th></tr>
     </tfoot>
   </table>
+
+  <?php if ($attachments): ?>
+  <hr>
+  <h6>Attachments</h6>
+  <div class="d-flex flex-wrap gap-3">
+    <?php foreach ($attachments as $a): ?>
+      <div class="text-center">
+        <?php if (str_starts_with($a['mime_type'] ?? '', 'image/')): ?>
+          <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank">
+            <img src="api/attachment_download.php?id=<?= (int)$a['id'] ?>" alt="<?= e($a['original_name']) ?>" style="max-width:120px;max-height:120px;object-fit:cover;" class="border rounded">
+          </a>
+        <?php else: ?>
+          <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm d-block"><i class="bi bi-file-earmark"></i> File</a>
+        <?php endif; ?>
+        <div class="small text-muted mt-1" style="max-width:120px;overflow-wrap:break-word;"><?= e($a['original_name']) ?></div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
 </div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

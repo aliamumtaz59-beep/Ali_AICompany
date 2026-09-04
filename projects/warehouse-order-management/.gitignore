@@ -1,0 +1,2 @@
+uploads/orders/*
+!uploads/orders/.gitkeep

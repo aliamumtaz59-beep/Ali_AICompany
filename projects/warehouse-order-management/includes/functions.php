@@ -62,3 +62,25 @@ function format_date(?string $date): string
     if (!$date) return '';
     return date('d-M-Y', strtotime($date));
 }
+
+/**
+ * Flattens a multi-file $_FILES['field'] entry into a list of individual file arrays,
+ * skipping empty slots (no file selected).
+ */
+function normalize_files(array $files): array
+{
+    if (empty($files['name'])) return [];
+    $names = (array) $files['name'];
+    $normalized = [];
+    foreach ($names as $i => $name) {
+        if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
+        $normalized[] = [
+            'name' => $name,
+            'type' => $files['type'][$i],
+            'tmp_name' => $files['tmp_name'][$i],
+            'error' => $files['error'][$i],
+            'size' => $files['size'][$i],
+        ];
+    }
+    return $normalized;
+}

@@ -55,6 +55,18 @@ CREATE TABLE order_items (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+CREATE TABLE order_attachments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    original_name VARCHAR(255) NOT NULL,
+    stored_name VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(100) NULL,
+    size INT UNSIGNED NOT NULL DEFAULT 0,
+    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_order_id (order_id),
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Default admin user: username=admin password=Admin@123
 INSERT INTO users (name, username, password_hash, role, status)
 VALUES ('Administrator', 'admin', '$2y$12$KuZXbiuys1ipvWWfOdQQOO5juVHJpuYem7qTSAUn2UGrQCKg7V4Te', 'admin', 'active');

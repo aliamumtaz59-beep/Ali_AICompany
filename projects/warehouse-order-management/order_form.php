@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Product.php';
+require_once __DIR__ . '/models/Attachment.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
@@ -62,11 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'barcode_no' => $barcodeNo ?: null, 'remarks' => $remarks];
         if ($id) {
             Order::update($id, $header, $items);
+            $orderId = $id;
             flash('success', 'Order updated successfully.');
         } else {
-            Order::create($header, $items, current_user()['id']);
+            $orderId = Order::create($header, $items, current_user()['id']);
             flash('success', 'Order created successfully.');
         }
+
+        foreach (normalize_files($_FILES['attachments'] ?? []) as $file) {
+            $uploadError = Attachment::upload($orderId, $file);
+            if ($uploadError) flash('warning', $uploadError);
+        }
+
         redirect('orders.php');
     }
 
@@ -93,7 +101,7 @@ require __DIR__ . '/includes/header.php';
 
 <div class="stat-card">
   <?php foreach ($errors as $err): ?><div class="alert alert-danger"><?= e($err) ?></div><?php endforeach; ?>
-  <form method="post" id="orderForm">
+  <form method="post" id="orderForm" enctype="multipart/form-data">
     <?= csrf_field() ?>
     <input type="hidden" name="id" value="<?= (int)$id ?>">
     <div class="row g-3 mb-3">
@@ -115,7 +123,31 @@ require __DIR__ . '/includes/header.php';
         <label class="form-label">Barcode No</label>
         <input type="text" name="barcode_no" class="form-control" placeholder="Scan or type barcode" value="<?= e($displayOrder['barcode_no'] ?? '') ?>">
       </div>
+      <div class="col-md-8">
+        <label class="form-label">Attachments (support file / image of order)</label>
+        <input type="file" name="attachments[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+        <div class="form-text">Max 10MB per file. Allowed: images, PDF, Word, Excel, text files.</div>
+      </div>
     </div>
+
+    <?php if ($id): $existingAttachments = Attachment::forOrder($id); if ($existingAttachments): ?>
+    <div class="mb-3">
+      <label class="form-label d-block">Existing Attachments</label>
+      <ul class="list-group" style="max-width:500px;">
+        <?php foreach ($existingAttachments as $a): ?>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank"><?= e($a['original_name']) ?></a>
+          <form method="post" action="attachment_delete.php" class="d-inline">
+            <?= csrf_field() ?>
+            <input type="hidden" name="attachment_id" value="<?= (int)$a['id'] ?>">
+            <input type="hidden" name="order_id" value="<?= (int)$id ?>">
+            <button type="submit" class="btn btn-sm btn-outline-danger confirm-delete"><i class="bi bi-trash"></i></button>
+          </form>
+        </li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+    <?php endif; endif; ?>
 
     <table class="table" id="itemsTable">
       <thead><tr><th>Product</th><th>Quantity</th><th>Unit</th><th>Remarks</th><th></th></tr></thead>

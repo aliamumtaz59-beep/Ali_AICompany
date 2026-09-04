@@ -23,3 +23,4 @@ Simple PHP 8.2+ / MySQL 8+ MVP for recording and reporting warehouse orders.
 
 - Orders do not affect inventory/stock — this version only records and reports orders, by design (see business rule in project brief).
 - Architecture leaves room for future modules (multi-warehouse, stock, suppliers, purchase/sales orders, etc.) without breaking the current schema.
+- Order attachments (support files/images) are capped at 10MB per file in-app, but PHP's own `upload_max_filesize` and `post_max_size` (in `php.ini`) may cap uploads lower by default (often 2MB) — raise both if needed. Uploaded files are stored under `uploads/orders/<order_id>/` with a `.htaccess` denying direct web access; they're only served through `api/attachment_download.php` (login required).
