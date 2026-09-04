@@ -20,8 +20,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, remarks, created_by) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['remarks'], $userId]);
+            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, barcode_no, remarks, created_by) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['barcode_no'], $header['remarks'], $userId]);
             $orderId = (int) $pdo->lastInsertId();
 
             $itemStmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, unit, remarks) VALUES (?, ?, ?, ?, ?)");
@@ -42,8 +42,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, remarks=? WHERE id=?");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['remarks'], $orderId]);
+            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, barcode_no=?, remarks=? WHERE id=?");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['barcode_no'], $header['remarks'], $orderId]);
 
             $pdo->prepare("DELETE FROM order_items WHERE order_id = ?")->execute([$orderId]);
 

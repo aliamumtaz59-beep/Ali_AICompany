@@ -30,6 +30,7 @@ CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(50) NOT NULL UNIQUE,
     order_date DATE NOT NULL,
+    barcode_no VARCHAR(100) NULL,
     remarks VARCHAR(255) NULL,
     created_by INT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

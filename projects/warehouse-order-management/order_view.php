@@ -23,7 +23,7 @@ require __DIR__ . '/includes/header.php';
       <div class="text-muted">Order Date: <?= e(format_date($order['order_date'])) ?></div>
       <div class="text-muted">Created: <?= e(format_date($order['created_at'])) ?></div>
       <?php if ($order['remarks']): ?><div class="text-muted">Remarks: <?= e($order['remarks']) ?></div><?php endif; ?>
-      <svg id="orderBarcode" class="mt-2"></svg>
+      <?php if ($order['barcode_no']): ?><div class="text-muted">Barcode No: <?= e($order['barcode_no']) ?></div><?php endif; ?>
     </div>
     <div class="d-print-none">
       <a href="order_form.php?id=<?= (int)$order['id'] ?>" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
@@ -48,10 +48,5 @@ require __DIR__ . '/includes/header.php';
     </tfoot>
   </table>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.6/JsBarcode.all.min.js"></script>
-<script>
-JsBarcode('#orderBarcode', <?= json_encode($order['order_number']) ?>, { format: 'CODE128', width: 2, height: 50, displayValue: true, fontSize: 14, margin: 5 });
-</script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

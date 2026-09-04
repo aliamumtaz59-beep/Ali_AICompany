@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $orderNumber = trim($_POST['order_number'] ?? '');
     $orderDate = $_POST['order_date'] ?? '';
+    $barcodeNo = trim($_POST['barcode_no'] ?? '');
     $remarks = trim($_POST['remarks'] ?? '');
     $itemsRaw = $_POST['items'] ?? [];
 
@@ -58,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$items) $errors[] = 'At least one product is required.';
 
     if (!$errors) {
-        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'remarks' => $remarks];
+        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'barcode_no' => $barcodeNo ?: null, 'remarks' => $remarks];
         if ($id) {
             Order::update($id, $header, $items);
             flash('success', 'Order updated successfully.');
@@ -69,17 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('orders.php');
     }
 
-    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'remarks' => $remarks, 'items' => $itemsRaw];
+    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'barcode_no' => $barcodeNo, 'remarks' => $remarks, 'items' => $itemsRaw];
 }
 
 $displayOrder = $formData ?? ($order ? [
     'order_number' => $order['order_number'],
     'order_date' => $order['order_date'],
+    'barcode_no' => $order['barcode_no'],
     'remarks' => $order['remarks'],
     'items' => $order['items'],
 ] : [
     'order_number' => generate_order_number(db()),
     'order_date' => date('Y-m-d'),
+    'barcode_no' => '',
     'remarks' => '',
     'items' => [['product_id' => '', 'quantity' => '', 'unit' => '', 'remarks' => '']],
 ]);
@@ -109,10 +112,8 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="row g-3 mb-3">
       <div class="col-md-4">
-        <label class="form-label">Order Barcode</label>
-        <div class="border rounded p-2 bg-white text-center">
-          <svg id="orderBarcode"></svg>
-        </div>
+        <label class="form-label">Barcode No</label>
+        <input type="text" name="barcode_no" class="form-control" placeholder="Scan or type barcode" value="<?= e($displayOrder['barcode_no'] ?? '') ?>">
       </div>
     </div>
 
@@ -144,7 +145,6 @@ require __DIR__ . '/includes/header.php';
   </form>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.6/JsBarcode.all.min.js"></script>
 <script>
 var activeProducts = <?= json_encode(array_map(fn($p) => ['id'=>$p['id'],'product_code'=>$p['product_code'],'product_name'=>$p['product_name'],'unit'=>$p['unit']], $activeProducts)) ?>;
 document.getElementById('addLineBtn').addEventListener('click', function () {
@@ -155,25 +155,10 @@ document.querySelector('input[name="order_date"]').addEventListener('change', fu
   fetch('api/get_order_number.php?date=' + encodeURIComponent(this.value))
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      if (data.order_number) {
-        document.querySelector('input[name="order_number"]').value = data.order_number;
-        renderOrderBarcode();
-      }
+      if (data.order_number) document.querySelector('input[name="order_number"]').value = data.order_number;
     });
 });
 <?php endif; ?>
-
-function renderOrderBarcode() {
-  var value = document.getElementById('orderNumberInput').value.trim();
-  if (!value) return;
-  try {
-    JsBarcode('#orderBarcode', value, { format: 'CODE128', width: 2, height: 50, displayValue: true, fontSize: 14, margin: 5 });
-  } catch (e) {
-    document.getElementById('orderBarcode').innerHTML = '';
-  }
-}
-document.getElementById('orderNumberInput').addEventListener('input', renderOrderBarcode);
-renderOrderBarcode();
 </script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
