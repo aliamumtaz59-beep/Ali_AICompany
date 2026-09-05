@@ -49,3 +49,8 @@ body { background: linear-gradient(180deg, #f7f2ee 0%, #eef1f5 260px, #eef1f5 10
 .chart-card.accent-green { border-top-color: #43e97b; }
 .chart-card.accent-coral { border-top-color: var(--armadio-coral); }
 .text-purple { color: #a18cd1; }
+
+.ts-wrapper { min-width: 200px; }
+.ts-wrapper.single .ts-control { background: #fff; }
+.filter-form .ts-wrapper { min-width: 220px; }
+.filter-loading { opacity: .55; pointer-events: none; transition: opacity .15s; }

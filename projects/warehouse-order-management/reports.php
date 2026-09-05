@@ -30,28 +30,13 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     exit;
 }
 
-$pageTitle = 'Reports';
-require __DIR__ . '/includes/header.php';
+$exportUrl = '?' . http_build_query(array_merge($_GET, ['export' => 'csv']));
+
+ob_start();
 ?>
-
-<form class="row g-2 mb-3">
-  <input type="hidden" name="type" value="<?= e($type) ?>">
-  <div class="col-auto">
-    <select name="type" class="form-select" onchange="this.form.submit()">
-      <option value="daily" <?= $type==='daily'?'selected':'' ?>>Daily Report</option>
-      <option value="monthly" <?= $type==='monthly'?'selected':'' ?>>Monthly Report</option>
-      <option value="product" <?= $type==='product'?'selected':'' ?>>Product Report</option>
-      <option value="custom" <?= $type==='custom'?'selected':'' ?>>Custom Date Report</option>
-    </select>
-  </div>
-  <div class="col-auto"><input type="date" name="date_from" class="form-control" value="<?= e($dateFrom) ?>"></div>
-  <div class="col-auto"><input type="date" name="date_to" class="form-control" value="<?= e($dateTo) ?>"></div>
-  <div class="col-auto"><button class="btn btn-primary">Apply</button></div>
-  <div class="col-auto">
-    <a class="btn btn-outline-success" href="?<?= http_build_query(array_merge($_GET, ['export'=>'csv'])) ?>"><i class="bi bi-download"></i> Export CSV</a>
-  </div>
-</form>
-
+<div class="d-flex justify-content-end mb-2">
+  <a class="btn btn-outline-success btn-sm" href="<?= e($exportUrl) ?>"><i class="bi bi-download"></i> Export CSV</a>
+</div>
 <div class="stat-card">
   <?php if ($type === 'daily' || $type === 'custom'): ?>
     <table class="table table-hover">
@@ -102,5 +87,32 @@ require __DIR__ . '/includes/header.php';
     </div>
   <?php endif; ?>
 </div>
+<?php
+$resultsHtml = ob_get_clean();
+
+if (is_ajax_request()) {
+    echo $resultsHtml;
+    exit;
+}
+
+$pageTitle = 'Reports';
+require __DIR__ . '/includes/header.php';
+?>
+
+<form class="row g-2 mb-3 filter-form" data-live-filter="resultsContainer">
+  <div class="col-auto">
+    <select name="type" class="form-select">
+      <option value="daily" <?= $type==='daily'?'selected':'' ?>>Daily Report</option>
+      <option value="monthly" <?= $type==='monthly'?'selected':'' ?>>Monthly Report</option>
+      <option value="product" <?= $type==='product'?'selected':'' ?>>Product Report</option>
+      <option value="custom" <?= $type==='custom'?'selected':'' ?>>Custom Date Report</option>
+    </select>
+  </div>
+  <div class="col-auto"><input type="date" name="date_from" class="form-control" value="<?= e($dateFrom) ?>"></div>
+  <div class="col-auto"><input type="date" name="date_to" class="form-control" value="<?= e($dateTo) ?>"></div>
+  <div class="col-auto"><button class="btn btn-primary">Apply</button></div>
+</form>
+
+<div id="resultsContainer"><?= $resultsHtml ?></div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

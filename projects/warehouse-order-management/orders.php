@@ -26,36 +26,8 @@ $result = Order::paginated($filters, $page);
 $products = Product::active();
 $shops = Shop::active();
 
-$pageTitle = 'Orders';
-require __DIR__ . '/includes/header.php';
+ob_start();
 ?>
-
-<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-  <form class="row g-2">
-    <div class="col-auto"><input type="text" name="order_number" class="form-control" placeholder="Order #" value="<?= e($filters['order_number']) ?>"></div>
-    <div class="col-auto"><input type="date" name="date_from" class="form-control" value="<?= e($filters['date_from']) ?>"></div>
-    <div class="col-auto"><input type="date" name="date_to" class="form-control" value="<?= e($filters['date_to']) ?>"></div>
-    <div class="col-auto">
-      <select name="product_id" class="form-select">
-        <option value="">All Products</option>
-        <?php foreach ($products as $p): ?>
-          <option value="<?= (int)$p['id'] ?>" <?= ($filters['product_id']==$p['id'])?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-    <div class="col-auto">
-      <select name="shop_id" class="form-select">
-        <option value="">All Shops</option>
-        <?php foreach ($shops as $s): ?>
-          <option value="<?= (int)$s['id'] ?>" <?= ($filters['shop_id']==$s['id'])?'selected':'' ?>><?= e($s['shop_name']) ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-    <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
-  </form>
-  <a href="order_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Order</a>
-</div>
-
 <div class="stat-card">
   <table class="table table-hover align-middle">
     <thead>
@@ -89,5 +61,44 @@ require __DIR__ . '/includes/header.php';
   </table>
   <?php render_pagination($page, $result['pages'], array_filter($filters)); ?>
 </div>
+<?php
+$resultsHtml = ob_get_clean();
+
+if (is_ajax_request()) {
+    echo $resultsHtml;
+    exit;
+}
+
+$pageTitle = 'Orders';
+require __DIR__ . '/includes/header.php';
+?>
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <form class="row g-2 filter-form" data-live-filter="resultsContainer">
+    <div class="col-auto"><input type="text" name="order_number" class="form-control" placeholder="Order #" value="<?= e($filters['order_number']) ?>"></div>
+    <div class="col-auto"><input type="date" name="date_from" class="form-control" value="<?= e($filters['date_from']) ?>"></div>
+    <div class="col-auto"><input type="date" name="date_to" class="form-control" value="<?= e($filters['date_to']) ?>"></div>
+    <div class="col-auto">
+      <select name="product_id" class="form-select">
+        <option value="">All Products</option>
+        <?php foreach ($products as $p): ?>
+          <option value="<?= (int)$p['id'] ?>" <?= ($filters['product_id']==$p['id'])?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="shop_id" class="form-select">
+        <option value="">All Shops</option>
+        <?php foreach ($shops as $s): ?>
+          <option value="<?= (int)$s['id'] ?>" <?= ($filters['shop_id']==$s['id'])?'selected':'' ?>><?= e($s['shop_name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
+  </form>
+  <a href="order_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Order</a>
+</div>
+
+<div id="resultsContainer"><?= $resultsHtml ?></div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

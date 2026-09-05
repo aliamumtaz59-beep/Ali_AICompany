@@ -15,27 +15,8 @@ $search = trim($_GET['search'] ?? '');
 $status = $_GET['status'] ?? '';
 $products = Product::all($search ?: null, $status ?: null);
 
-$pageTitle = 'Products';
-require __DIR__ . '/includes/header.php';
+ob_start();
 ?>
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <form class="row g-2">
-    <div class="col-auto"><input type="text" name="search" class="form-control" placeholder="Search code/name" value="<?= e($search) ?>"></div>
-    <div class="col-auto">
-      <select name="status" class="form-select">
-        <option value="">All Status</option>
-        <option value="active" <?= $status==='active'?'selected':'' ?>>Active</option>
-        <option value="inactive" <?= $status==='inactive'?'selected':'' ?>>Inactive</option>
-      </select>
-    </div>
-    <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
-  </form>
-  <?php if (current_user()['role'] === 'admin'): ?>
-  <a href="product_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Product</a>
-  <?php endif; ?>
-</div>
-
 <div class="stat-card">
   <table class="table table-hover align-middle">
     <thead>
@@ -76,5 +57,35 @@ require __DIR__ . '/includes/header.php';
     </tbody>
   </table>
 </div>
+<?php
+$resultsHtml = ob_get_clean();
+
+if (is_ajax_request()) {
+    echo $resultsHtml;
+    exit;
+}
+
+$pageTitle = 'Products';
+require __DIR__ . '/includes/header.php';
+?>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <form class="row g-2 filter-form" data-live-filter="resultsContainer">
+    <div class="col-auto"><input type="text" name="search" class="form-control" placeholder="Search code/name" value="<?= e($search) ?>"></div>
+    <div class="col-auto">
+      <select name="status" class="form-select">
+        <option value="">All Status</option>
+        <option value="active" <?= $status==='active'?'selected':'' ?>>Active</option>
+        <option value="inactive" <?= $status==='inactive'?'selected':'' ?>>Inactive</option>
+      </select>
+    </div>
+    <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
+  </form>
+  <?php if (current_user()['role'] === 'admin'): ?>
+  <a href="product_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Product</a>
+  <?php endif; ?>
+</div>
+
+<div id="resultsContainer"><?= $resultsHtml ?></div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

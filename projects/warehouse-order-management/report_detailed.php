@@ -28,42 +28,17 @@ $shops = Shop::active();
 $products = Product::active();
 $totalQty = array_sum(array_column($rows, 'quantity'));
 $orderCount = count(array_unique(array_column($rows, 'order_number')));
+$exportUrl = '?' . http_build_query(array_merge($_GET, ['export' => 'csv']));
 
-$pageTitle = 'Detailed Report';
-require __DIR__ . '/includes/header.php';
+ob_start();
 ?>
-
-<form class="row g-2 mb-3">
-  <div class="col-auto"><label class="form-label mb-0">From</label><input type="date" name="date_from" class="form-control" value="<?= e($dateFrom) ?>"></div>
-  <div class="col-auto"><label class="form-label mb-0">To</label><input type="date" name="date_to" class="form-control" value="<?= e($dateTo) ?>"></div>
-  <div class="col-auto">
-    <label class="form-label mb-0">Shop</label>
-    <select name="shop_id" class="form-select">
-      <option value="">All Shops</option>
-      <?php foreach ($shops as $s): ?>
-        <option value="<?= (int)$s['id'] ?>" <?= $shopId==$s['id']?'selected':'' ?>><?= e($s['shop_name']) ?></option>
-      <?php endforeach; ?>
-    </select>
+<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+  <div class="alert alert-info mb-0 py-2 flex-grow-1">
+    Line Items: <strong><?= count($rows) ?></strong> &nbsp;|&nbsp;
+    Orders: <strong><?= $orderCount ?></strong> &nbsp;|&nbsp;
+    Total Quantity: <strong><?= number_format($totalQty, 2) ?></strong>
   </div>
-  <div class="col-auto">
-    <label class="form-label mb-0">Product</label>
-    <select name="product_id" class="form-select">
-      <option value="">All Products</option>
-      <?php foreach ($products as $p): ?>
-        <option value="<?= (int)$p['id'] ?>" <?= $productId==$p['id']?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
-  <div class="col-auto align-self-end"><button class="btn btn-primary">Apply</button></div>
-  <div class="col-auto align-self-end">
-    <a class="btn btn-outline-success" href="?<?= http_build_query(array_merge($_GET, ['export'=>'csv'])) ?>"><i class="bi bi-download"></i> Export CSV</a>
-  </div>
-</form>
-
-<div class="alert alert-info">
-  Line Items: <strong><?= count($rows) ?></strong> &nbsp;|&nbsp;
-  Orders: <strong><?= $orderCount ?></strong> &nbsp;|&nbsp;
-  Total Quantity: <strong><?= number_format($totalQty, 2) ?></strong>
+  <a class="btn btn-outline-success btn-sm" href="<?= e($exportUrl) ?>"><i class="bi bi-download"></i> Export CSV</a>
 </div>
 
 <div class="stat-card">
@@ -88,5 +63,42 @@ require __DIR__ . '/includes/header.php';
   </table>
   </div>
 </div>
+<?php
+$resultsHtml = ob_get_clean();
+
+if (is_ajax_request()) {
+    echo $resultsHtml;
+    exit;
+}
+
+$pageTitle = 'Detailed Report';
+require __DIR__ . '/includes/header.php';
+?>
+
+<form class="row g-2 mb-3 filter-form" data-live-filter="resultsContainer">
+  <div class="col-auto"><label class="form-label mb-0">From</label><input type="date" name="date_from" class="form-control" value="<?= e($dateFrom) ?>"></div>
+  <div class="col-auto"><label class="form-label mb-0">To</label><input type="date" name="date_to" class="form-control" value="<?= e($dateTo) ?>"></div>
+  <div class="col-auto">
+    <label class="form-label mb-0">Shop</label>
+    <select name="shop_id" class="form-select">
+      <option value="">All Shops</option>
+      <?php foreach ($shops as $s): ?>
+        <option value="<?= (int)$s['id'] ?>" <?= $shopId==$s['id']?'selected':'' ?>><?= e($s['shop_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+  <div class="col-auto">
+    <label class="form-label mb-0">Product</label>
+    <select name="product_id" class="form-select">
+      <option value="">All Products</option>
+      <?php foreach ($products as $p): ?>
+        <option value="<?= (int)$p['id'] ?>" <?= $productId==$p['id']?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+  <div class="col-auto align-self-end"><button class="btn btn-primary">Apply</button></div>
+</form>
+
+<div id="resultsContainer"><?= $resultsHtml ?></div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -63,6 +63,36 @@ function format_date(?string $date): string
     return date('d-M-Y', strtotime($date));
 }
 
+function is_ajax_request(): bool
+{
+    return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+}
+
+/**
+ * Resolves a dashboard date-range shortcut (today/this_week/this_month/...) into
+ * concrete [dateFrom, dateTo] strings. For 'custom', uses the given from/to as-is.
+ */
+function resolve_date_range(string $range, ?string $customFrom, ?string $customTo): array
+{
+    $today = date('Y-m-d');
+    switch ($range) {
+        case 'today':
+            return [$today, $today];
+        case 'yesterday':
+            $yesterday = date('Y-m-d', strtotime('-1 day'));
+            return [$yesterday, $yesterday];
+        case 'this_week':
+            return [date('Y-m-d', strtotime('monday this week')), $today];
+        case 'last_month':
+            return [date('Y-m-01', strtotime('first day of last month')), date('Y-m-t', strtotime('last day of last month'))];
+        case 'custom':
+            return [$customFrom ?: date('Y-m-01'), $customTo ?: $today];
+        case 'this_month':
+        default:
+            return [date('Y-m-01'), $today];
+    }
+}
+
 /**
  * Flattens a multi-file $_FILES['field'] entry into a list of individual file arrays,
  * skipping empty slots (no file selected).
