@@ -15,9 +15,9 @@
 <body>
 <div class="wrapper">
   <nav class="sidebar">
-    <div class="sidebar-brand">
+    <a href="index.php" class="sidebar-brand text-decoration-none d-block">
       <i class="bi bi-bag-fill"></i> Armadio
-    </div>
+    </a>
     <ul class="nav flex-column">
       <li class="nav-item"><a class="nav-link<?= $currentPage==='index.php'?' active':'' ?>" href="index.php"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
       <?php if (user_has_permission('orders.view')): ?>

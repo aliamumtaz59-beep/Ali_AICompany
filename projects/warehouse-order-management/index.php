@@ -161,7 +161,7 @@ require __DIR__ . '/includes/header.php';
         <tbody>
         <?php foreach ($stats['recent_orders'] as $o): ?>
           <tr>
-            <td><a href="order_view.php?id=<?= (int)$o['id'] ?>"><?= e($o['order_number']) ?></a></td>
+            <td><a href="order_view.php?id=<?= e(id_encode($o['id'])) ?>"><?= e($o['order_number']) ?></a></td>
             <td><?= e(format_date($o['order_date'])) ?></td>
             <td><?php if ($o['shop_id']): ?><a href="orders.php?shop_id=<?= (int)$o['shop_id'] ?>"><?= e($o['shop_name']) ?></a><?php endif; ?></td>
             <td class="text-end"><?= number_format($o['total_quantity'],2) ?></td>

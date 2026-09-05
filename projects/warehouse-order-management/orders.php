@@ -36,16 +36,16 @@ ob_start();
     <tbody>
     <?php foreach ($result['data'] as $o): ?>
       <tr>
-        <td><a href="order_view.php?id=<?= (int)$o['id'] ?>"><?= e($o['order_number']) ?></a></td>
+        <td><a href="order_view.php?id=<?= e(id_encode($o['id'])) ?>"><?= e($o['order_number']) ?></a></td>
         <td><?= e(format_date($o['order_date'])) ?></td>
         <td><?= e($o['shop_name']) ?></td>
         <td class="text-end"><?= (int)$o['item_count'] ?></td>
         <td class="text-end"><?= number_format($o['total_quantity'], 2) ?></td>
         <td><?= e(format_date($o['created_at'])) ?></td>
         <td>
-          <a href="order_view.php?id=<?= (int)$o['id'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
+          <a href="order_view.php?id=<?= e(id_encode($o['id'])) ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
           <?php if (user_has_permission('orders.manage')): ?>
-          <a href="order_form.php?id=<?= (int)$o['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+          <a href="order_form.php?id=<?= e(id_encode($o['id'])) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
           <?php endif; ?>
           <?php if (user_has_permission('orders.delete')): ?>
           <form method="post" class="d-inline confirm-delete-form">

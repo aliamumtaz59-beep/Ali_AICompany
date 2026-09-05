@@ -4,7 +4,7 @@ require_once __DIR__ . '/models/Product.php';
 require_once __DIR__ . '/models/Shop.php';
 require_permission('products.manage');
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
+$id = isset($_GET['id']) ? id_decode($_GET['id']) : (isset($_POST['id']) ? id_decode($_POST['id']) : 0);
 $product = $id ? Product::find($id) : null;
 if ($id && !$product) {
     flash('danger', 'Product not found.');
@@ -76,7 +76,7 @@ require __DIR__ . '/includes/header.php';
   <?php foreach ($errors as $err): ?><div class="alert alert-danger"><?= e($err) ?></div><?php endforeach; ?>
   <form method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    <input type="hidden" name="id" value="<?= (int)$id ?>">
+    <input type="hidden" name="id" value="<?= e($id ? id_encode($id) : '') ?>">
     <div class="mb-3">
       <label class="form-label">Product Code / SKU</label>
       <input type="text" name="product_code" class="form-control" required value="<?= e($product['product_code'] ?? '') ?>">

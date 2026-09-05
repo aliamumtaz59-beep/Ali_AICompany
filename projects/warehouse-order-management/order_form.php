@@ -6,7 +6,7 @@ require_once __DIR__ . '/models/Attachment.php';
 require_once __DIR__ . '/models/Shop.php';
 require_permission('orders.manage');
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
+$id = isset($_GET['id']) ? id_decode($_GET['id']) : (isset($_POST['id']) ? id_decode($_POST['id']) : 0);
 $order = $id ? Order::find($id) : null;
 if ($id && !$order) {
     flash('danger', 'Order not found.');
@@ -109,7 +109,7 @@ require __DIR__ . '/includes/header.php';
   <?php foreach ($errors as $err): ?><div class="alert alert-danger"><?= e($err) ?></div><?php endforeach; ?>
   <form method="post" id="orderForm" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    <input type="hidden" name="id" value="<?= (int)$id ?>">
+    <input type="hidden" name="id" value="<?= e($id ? id_encode($id) : '') ?>">
     <div class="row g-3 mb-3">
       <div class="col-md-4">
         <label class="form-label">Order Number</label>
@@ -155,7 +155,7 @@ require __DIR__ . '/includes/header.php';
           <form method="post" action="attachment_delete.php" class="d-inline">
             <?= csrf_field() ?>
             <input type="hidden" name="attachment_id" value="<?= (int)$a['id'] ?>">
-            <input type="hidden" name="order_id" value="<?= (int)$id ?>">
+            <input type="hidden" name="order_id" value="<?= e(id_encode($id)) ?>">
             <button type="submit" class="btn btn-sm btn-outline-danger confirm-delete"><i class="bi bi-trash"></i></button>
           </form>
         </li>

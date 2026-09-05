@@ -31,7 +31,7 @@ ob_start();
         <td><span class="badge bg-<?= $s['status']==='active'?'success':'secondary' ?>"><?= e($s['status']) ?></span></td>
         <td>
           <?php if (user_has_permission('shops.manage')): ?>
-          <a href="shop_form.php?id=<?= (int)$s['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+          <a href="shop_form.php?id=<?= e(id_encode($s['id'])) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
           <form method="post" class="d-inline">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="toggle">

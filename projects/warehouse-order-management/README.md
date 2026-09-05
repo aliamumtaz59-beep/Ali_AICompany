@@ -31,6 +31,8 @@ Simple PHP 8.2+ / MySQL 8+ MVP for recording and reporting warehouse orders.
 - The dashboard is clickable throughout: KPI cards, chart bars/segments/points, and table rows link to the relevant filtered Orders/Products/Shops list.
 - All filter forms (Orders, Products, Shops, Reports, Detailed Report) auto-apply on every change — no "Apply"/"Filter" click needed — and fetch results via AJAX instead of reloading the page, via a small reusable engine in `public/js/app.js` (`initLiveFilter`). Each page detects the AJAX request (`is_ajax_request()` in `includes/functions.php`, checking the `X-Requested-With` header) and returns just the results-table fragment instead of the full page. The Dashboard's charts refresh the same way via a dedicated JSON endpoint (`api/dashboard_data.php`) instead of a fragment swap, since chart data can't be `innerHTML`'d in. All of this degrades gracefully to a normal full-page GET submit if JavaScript is unavailable.
 - `public/css/style.css`, `public/js/app.js`, and `public/favicon.svg` are all loaded through `asset_url()` (`includes/functions.php`), which appends a `?v=<file mtime>` cache-buster — every deploy is automatically a new URL, so browsers (mobile especially) can't keep serving a stale cached copy after an update.
+- Every dynamic page response also sends `Cache-Control: no-store` (`config/config.php`) — without it, a browser could reuse a cached HTML response for a URL like `user_form.php?id=...` and show stale data for a different record than the one actually requested.
+- Clicking the "Armadio" sidebar logo goes to the Dashboard.
 
 ## Permissions
 
@@ -54,3 +56,15 @@ The permission catalog lives in `includes/permissions.php` (`PERMISSIONS` consta
 ```sql
 ALTER TABLE users ADD COLUMN permissions TEXT NULL AFTER role;
 ```
+
+## Encrypted record IDs in URLs
+
+Links like `order_view.php?id=...` and `user_form.php?id=...` no longer expose the raw database ID — `id_encode()`/`id_decode()` (`includes/functions.php`) AES-256-CBC-encrypt it with a random IV each time a link is rendered, so the same record produces a different-looking URL on every page load, and it's computationally infeasible to guess another record's URL, decrypt one, or tell whether two links point to the same record without the server's secret key (`APP_KEY` in `config/config.php`). Covers the primary id on order/product/shop/user view+edit pages; list-filter parameters (`?product_id=`, `?shop_id=`) and internal POST-only action IDs (delete/toggle forms) are unaffected since they're never exposed as a shareable GET URL.
+
+**Set your own secret key** — `config/config.php` ships with a working default so the app runs out of the box, but that exact value is now public (it's in this repo's history). For real security, override it via an environment variable:
+```
+APP_KEY=<generate with: php -r "echo bin2hex(random_bytes(32));">
+```
+Changing the key invalidates any links/bookmarks already shared (they'll just 404 as "not found," nothing breaks) — expected the first time you set a real key.
+
+Also note: this encrypts the *identifier*, not access to the record — page-level permission checks (see Permissions above) are still what actually decide who can view/edit what.

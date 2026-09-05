@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Shop.php';
 require_permission('shops.manage');
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
+$id = isset($_GET['id']) ? id_decode($_GET['id']) : (isset($_POST['id']) ? id_decode($_POST['id']) : 0);
 $shop = $id ? Shop::find($id) : null;
 if ($id && !$shop) {
     flash('danger', 'Shop not found.');
@@ -43,7 +43,7 @@ require __DIR__ . '/includes/header.php';
   <?php foreach ($errors as $err): ?><div class="alert alert-danger"><?= e($err) ?></div><?php endforeach; ?>
   <form method="post">
     <?= csrf_field() ?>
-    <input type="hidden" name="id" value="<?= (int)$id ?>">
+    <input type="hidden" name="id" value="<?= e($id ? id_encode($id) : '') ?>">
     <div class="mb-3">
       <label class="form-label">Shop Name</label>
       <input type="text" name="shop_name" class="form-control" required value="<?= e($shop['shop_name'] ?? '') ?>">

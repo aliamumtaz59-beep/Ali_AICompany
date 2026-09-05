@@ -42,7 +42,7 @@ ob_start();
         <td><?= e(format_date($p['updated_at'])) ?></td>
         <td>
           <?php if (user_has_permission('products.manage')): ?>
-          <a href="product_form.php?id=<?= (int)$p['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+          <a href="product_form.php?id=<?= e(id_encode($p['id'])) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
           <form method="post" class="d-inline">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="toggle">

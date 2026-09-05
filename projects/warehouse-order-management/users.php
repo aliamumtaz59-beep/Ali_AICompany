@@ -34,7 +34,7 @@ require __DIR__ . '/includes/header.php';
           <?php endif; ?>
         </td>
         <td><span class="badge bg-<?= $u['status']==='active'?'success':'secondary' ?>"><?= e($u['status']) ?></span></td>
-        <td><a href="user_form.php?id=<?= (int)$u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a></td>
+        <td><a href="user_form.php?id=<?= e(id_encode($u['id'])) ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a></td>
       </tr>
     <?php endforeach; ?>
     </tbody>

@@ -4,8 +4,8 @@ require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Attachment.php';
 require_permission('orders.view');
 
-$id = (int)($_GET['id'] ?? 0);
-$order = Order::find($id);
+$id = id_decode($_GET['id'] ?? '');
+$order = $id ? Order::find($id) : null;
 if (!$order) {
     flash('danger', 'Order not found.');
     redirect('orders.php');
@@ -32,7 +32,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="d-print-none">
       <?php if (user_has_permission('orders.manage')): ?>
-      <a href="order_form.php?id=<?= (int)$order['id'] ?>" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
+      <a href="order_form.php?id=<?= e(id_encode($order['id'])) ?>" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
       <?php endif; ?>
       <button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> Print</button>
       <a href="orders.php" class="btn btn-secondary">Back</a>

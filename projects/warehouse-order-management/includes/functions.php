@@ -76,6 +76,38 @@ function asset_url(string $path): string
     return $path . '?v=' . $version;
 }
 
+/**
+ * Encrypts a numeric record ID for use in a URL (AES-256-CBC, random IV per
+ * call), so ids in links like order_view.php?id=... can't be decrypted,
+ * guessed, or enumerated without the server's secret APP_KEY.
+ */
+function id_encode(int $id): string
+{
+    $key = hash('sha256', APP_KEY, true);
+    $iv = random_bytes(16);
+    $cipher = openssl_encrypt((string) $id, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    return rtrim(strtr(base64_encode($iv . $cipher), '+/', '-_'), '=');
+}
+
+/**
+ * Reverses id_encode(). Returns 0 for a missing, malformed, or tampered
+ * token so callers can treat it exactly like "record not found".
+ */
+function id_decode(?string $token): int
+{
+    if (!$token) return 0;
+    $b64 = strtr($token, '-_', '+/');
+    $b64 .= str_repeat('=', (4 - strlen($b64) % 4) % 4);
+    $data = base64_decode($b64, true);
+    if ($data === false || strlen($data) <= 16) return 0;
+
+    $key = hash('sha256', APP_KEY, true);
+    $iv = substr($data, 0, 16);
+    $cipher = substr($data, 16);
+    $plain = openssl_decrypt($cipher, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    return ($plain !== false && ctype_digit($plain)) ? (int) $plain : 0;
+}
+
 function is_ajax_request(): bool
 {
     return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';

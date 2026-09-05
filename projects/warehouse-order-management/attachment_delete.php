@@ -9,4 +9,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flash('success', 'Attachment removed.');
 }
 
-redirect('order_form.php?id=' . (int)($_POST['order_id'] ?? 0));
+redirect('order_form.php?id=' . urlencode($_POST['order_id'] ?? ''));
