@@ -50,6 +50,11 @@ body { background: linear-gradient(180deg, #f7f2ee 0%, #eef1f5 260px, #eef1f5 10
 .chart-card.accent-coral { border-top-color: var(--armadio-coral); }
 .text-purple { color: #a18cd1; }
 
+/* Tom Select's own CSS defines --ts-pr-clear-button as a unitless 0, which breaks
+   the padding-right max() calc when added to --ts-pr-caret's rem value in some
+   browsers, silently zeroing the caret's reserved space and letting it overlap
+   the selected text. Redeclaring it with an explicit unit fixes the calc. */
+:root { --ts-pr-clear-button: 0px; }
 .ts-wrapper { min-width: 200px; }
 .ts-wrapper.single .ts-control { background: #fff; }
 .filter-form .ts-wrapper { min-width: 220px; }

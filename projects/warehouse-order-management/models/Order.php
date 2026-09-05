@@ -206,50 +206,96 @@ class Order
         return $stmt->fetchAll();
     }
 
-    public static function trend(string $dateFrom, string $dateTo): array
+    public static function trend(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
     {
+        $joinExtra = $productId ? " AND oi.product_id = ?" : "";
+        $where = "o.order_date BETWEEN ? AND ?";
+
+        $params = [];
+        if ($productId) $params[] = $productId;
+        $params[] = $dateFrom;
+        $params[] = $dateTo;
+        if ($shopId) {
+            $where .= " AND o.shop_id = ?";
+            $params[] = $shopId;
+        }
+        if ($productId) {
+            $where .= " AND EXISTS (SELECT 1 FROM order_items oi2 WHERE oi2.order_id = o.id AND oi2.product_id = ?)";
+            $params[] = $productId;
+        }
+
         $stmt = db()->prepare("
             SELECT o.order_date, COUNT(DISTINCT o.id) orders, COALESCE(SUM(oi.quantity),0) quantity
             FROM orders o
-            LEFT JOIN order_items oi ON oi.order_id = o.id
-            WHERE o.order_date BETWEEN ? AND ?
+            LEFT JOIN order_items oi ON oi.order_id = o.id$joinExtra
+            WHERE $where
             GROUP BY o.order_date
             ORDER BY o.order_date ASC
         ");
-        $stmt->execute([$dateFrom, $dateTo]);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
-    public static function dailyReport(string $dateFrom, string $dateTo): array
+    public static function dailyReport(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
     {
-        return self::trend($dateFrom, $dateTo);
+        return self::trend($dateFrom, $dateTo, $shopId, $productId);
     }
 
-    public static function monthlyReport(string $dateFrom, string $dateTo): array
+    public static function monthlyReport(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
     {
+        $joinExtra = $productId ? " AND oi.product_id = ?" : "";
+        $where = "o.order_date BETWEEN ? AND ?";
+
+        $params = [];
+        if ($productId) $params[] = $productId;
+        $params[] = $dateFrom;
+        $params[] = $dateTo;
+        if ($shopId) {
+            $where .= " AND o.shop_id = ?";
+            $params[] = $shopId;
+        }
+        if ($productId) {
+            $where .= " AND EXISTS (SELECT 1 FROM order_items oi2 WHERE oi2.order_id = o.id AND oi2.product_id = ?)";
+            $params[] = $productId;
+        }
+
         $stmt = db()->prepare("
             SELECT DATE_FORMAT(o.order_date, '%Y-%m') month, COUNT(DISTINCT o.id) orders, COALESCE(SUM(oi.quantity),0) quantity
             FROM orders o
-            LEFT JOIN order_items oi ON oi.order_id = o.id
-            WHERE o.order_date BETWEEN ? AND ?
+            LEFT JOIN order_items oi ON oi.order_id = o.id$joinExtra
+            WHERE $where
             GROUP BY month
             ORDER BY month ASC
         ");
-        $stmt->execute([$dateFrom, $dateTo]);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
-    public static function productReport(string $dateFrom, string $dateTo): array
+    public static function productReport(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
     {
+        $joinWhere = "o.order_date BETWEEN ? AND ?";
+        $params = [$dateFrom, $dateTo];
+        if ($shopId) {
+            $joinWhere .= " AND o.shop_id = ?";
+            $params[] = $shopId;
+        }
+
+        $outerWhere = "1=1";
+        if ($productId) {
+            $outerWhere .= " AND p.id = ?";
+            $params[] = $productId;
+        }
+
         $stmt = db()->prepare("
             SELECT p.id, p.product_code, p.product_name, COUNT(DISTINCT oi.order_id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
             FROM products p
             LEFT JOIN order_items oi ON oi.product_id = p.id
-            LEFT JOIN orders o ON o.id = oi.order_id AND o.order_date BETWEEN ? AND ?
+            LEFT JOIN orders o ON o.id = oi.order_id AND $joinWhere
+            WHERE $outerWhere
             GROUP BY p.id
             ORDER BY total_qty DESC
         ");
-        $stmt->execute([$dateFrom, $dateTo]);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
@@ -281,17 +327,31 @@ class Order
         return $stmt->fetchAll();
     }
 
-    public static function customReport(string $dateFrom, string $dateTo): array
+    public static function customReport(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
     {
-        $pdo = db();
-        $stmt = $pdo->prepare("SELECT COUNT(DISTINCT o.id) orders, COALESCE(SUM(oi.quantity),0) quantity FROM orders o LEFT JOIN order_items oi ON oi.order_id=o.id WHERE o.order_date BETWEEN ? AND ?");
-        $stmt->execute([$dateFrom, $dateTo]);
+        $joinExtra = $productId ? " AND oi.product_id = ?" : "";
+        $where = "o.order_date BETWEEN ? AND ?";
+        $params = [];
+        if ($productId) $params[] = $productId;
+        $params[] = $dateFrom;
+        $params[] = $dateTo;
+        if ($shopId) {
+            $where .= " AND o.shop_id = ?";
+            $params[] = $shopId;
+        }
+        if ($productId) {
+            $where .= " AND EXISTS (SELECT 1 FROM order_items oi2 WHERE oi2.order_id = o.id AND oi2.product_id = ?)";
+            $params[] = $productId;
+        }
+
+        $stmt = db()->prepare("SELECT COUNT(DISTINCT o.id) orders, COALESCE(SUM(oi.quantity),0) quantity FROM orders o LEFT JOIN order_items oi ON oi.order_id=o.id$joinExtra WHERE $where");
+        $stmt->execute($params);
         $totals = $stmt->fetch();
 
         return [
             'totals' => $totals,
-            'daily' => self::dailyReport($dateFrom, $dateTo),
-            'products' => self::productReport($dateFrom, $dateTo),
+            'daily' => self::dailyReport($dateFrom, $dateTo, $shopId, $productId),
+            'products' => self::productReport($dateFrom, $dateTo, $shopId, $productId),
         ];
     }
 }

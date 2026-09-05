@@ -1,20 +1,24 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Order.php';
+require_once __DIR__ . '/models/Shop.php';
+require_once __DIR__ . '/models/Product.php';
 require_login();
 
 $type = $_GET['type'] ?? 'daily';
 $dateFrom = $_GET['date_from'] ?? date('Y-m-01');
 $dateTo = $_GET['date_to'] ?? date('Y-m-d');
+$shopId = (int)($_GET['shop_id'] ?? 0) ?: null;
+$productId = (int)($_GET['product_id'] ?? 0) ?: null;
 
 if ($type === 'daily') {
-    $rows = Order::dailyReport($dateFrom, $dateTo);
+    $rows = Order::dailyReport($dateFrom, $dateTo, $shopId, $productId);
 } elseif ($type === 'monthly') {
-    $rows = Order::monthlyReport($dateFrom, $dateTo);
+    $rows = Order::monthlyReport($dateFrom, $dateTo, $shopId, $productId);
 } elseif ($type === 'product') {
-    $rows = Order::productReport($dateFrom, $dateTo);
+    $rows = Order::productReport($dateFrom, $dateTo, $shopId, $productId);
 } else {
-    $custom = Order::customReport($dateFrom, $dateTo);
+    $custom = Order::customReport($dateFrom, $dateTo, $shopId, $productId);
     $rows = $custom['daily'];
 }
 
@@ -30,6 +34,8 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     exit;
 }
 
+$shops = Shop::active();
+$products = Product::active();
 $exportUrl = '?' . http_build_query(array_merge($_GET, ['export' => 'csv']));
 
 ob_start();
@@ -110,6 +116,22 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-auto"><input type="date" name="date_from" class="form-control" value="<?= e($dateFrom) ?>"></div>
   <div class="col-auto"><input type="date" name="date_to" class="form-control" value="<?= e($dateTo) ?>"></div>
+  <div class="col-auto">
+    <select name="shop_id" class="form-select">
+      <option value="">All Shops</option>
+      <?php foreach ($shops as $s): ?>
+        <option value="<?= (int)$s['id'] ?>" <?= $shopId==$s['id']?'selected':'' ?>><?= e($s['shop_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="product_id" class="form-select">
+      <option value="">All Products</option>
+      <?php foreach ($products as $p): ?>
+        <option value="<?= (int)$p['id'] ?>" <?= $productId==$p['id']?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
   <div class="col-auto"><button class="btn btn-primary">Apply</button></div>
 </form>
 
