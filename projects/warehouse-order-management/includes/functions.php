@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/permissions.php';
 
 function e(?string $v): string
 {
@@ -61,6 +62,18 @@ function format_date(?string $date): string
 {
     if (!$date) return '';
     return date('d-M-Y', strtotime($date));
+}
+
+/**
+ * Appends a cache-busting query string (the file's last-modified time) to a
+ * local asset path, so browsers (mobile especially) always fetch the latest
+ * CSS/JS after a deploy instead of serving a stale cached copy indefinitely.
+ */
+function asset_url(string $path): string
+{
+    $full = __DIR__ . '/../' . $path;
+    $version = is_file($full) ? filemtime($full) : time();
+    return $path . '?v=' . $version;
 }
 
 function is_ajax_request(): bool

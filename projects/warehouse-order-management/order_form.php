@@ -4,7 +4,7 @@ require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Product.php';
 require_once __DIR__ . '/models/Attachment.php';
 require_once __DIR__ . '/models/Shop.php';
-require_login();
+require_permission('orders.manage');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
 $order = $id ? Order::find($id) : null;

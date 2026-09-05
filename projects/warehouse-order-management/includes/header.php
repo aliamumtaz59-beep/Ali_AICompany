@@ -5,12 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($pageTitle ?? 'Warehouse Order Management') ?> - Armadio</title>
-<link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="<?= e(asset_url('public/favicon.svg')) ?>">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
-<link href="public/css/style.css" rel="stylesheet">
+<link href="<?= e(asset_url('public/css/style.css')) ?>" rel="stylesheet">
 </head>
 <body>
 <div class="wrapper">
@@ -20,12 +20,20 @@
     </div>
     <ul class="nav flex-column">
       <li class="nav-item"><a class="nav-link<?= $currentPage==='index.php'?' active':'' ?>" href="index.php"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <?php if (user_has_permission('orders.view')): ?>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['orders.php','order_form.php','order_view.php'])?' active':'' ?>" href="orders.php"><i class="bi bi-receipt"></i> Orders</a></li>
+      <?php endif; ?>
+      <?php if (user_has_permission('products.view')): ?>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['products.php','product_form.php'])?' active':'' ?>" href="products.php"><i class="bi bi-box-seam"></i> Products</a></li>
+      <?php endif; ?>
+      <?php if (user_has_permission('shops.view')): ?>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['shops.php','shop_form.php'])?' active':'' ?>" href="shops.php"><i class="bi bi-shop"></i> Shops</a></li>
+      <?php endif; ?>
+      <?php if (user_has_permission('reports.view')): ?>
       <li class="nav-item"><a class="nav-link<?= $currentPage==='reports.php'?' active':'' ?>" href="reports.php"><i class="bi bi-bar-chart"></i> Reports</a></li>
       <li class="nav-item"><a class="nav-link<?= $currentPage==='report_detailed.php'?' active':'' ?>" href="report_detailed.php"><i class="bi bi-list-columns-reverse"></i> Detailed Report</a></li>
-      <?php if ($user && $user['role'] === 'admin'): ?>
+      <?php endif; ?>
+      <?php if (user_has_permission('users.manage')): ?>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['users.php','user_form.php'])?' active':'' ?>" href="users.php"><i class="bi bi-people"></i> Users</a></li>
       <?php endif; ?>
       <li class="nav-item"><a class="nav-link" href="logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a></li>

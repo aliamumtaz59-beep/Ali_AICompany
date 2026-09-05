@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/User.php';
-require_admin();
+require_permission('users.manage');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
 $user = $id ? User::find($id) : null;
@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'username' => trim($_POST['username'] ?? ''),
         'password' => $_POST['password'] ?? '',
         'role' => $_POST['role'] ?? 'user',
+        'permissions' => array_values(array_intersect((array)($_POST['permissions'] ?? []), array_keys(PERMISSIONS))),
         'status' => $_POST['status'] ?? 'active',
     ];
 
@@ -38,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $user = array_merge($user ?? [], $data);
 }
+
+$userPermissions = $user['permissions'] ?? [];
 
 $pageTitle = $id ? 'Edit User' : 'Add User';
 require __DIR__ . '/includes/header.php';
@@ -62,10 +65,24 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="mb-3">
       <label class="form-label">Role</label>
-      <select name="role" class="form-select">
+      <select name="role" id="roleSelect" class="form-select">
         <option value="user" <?= ($user['role'] ?? 'user')==='user'?'selected':'' ?>>User</option>
         <option value="admin" <?= ($user['role'] ?? '')==='admin'?'selected':'' ?>>Admin</option>
       </select>
+      <div class="form-text">Admins always have full access to everything, regardless of the permissions below.</div>
+    </div>
+    <div class="mb-3" id="permissionsBlock">
+      <label class="form-label d-block">Permissions</label>
+      <div class="row">
+        <?php foreach (PERMISSIONS as $code => $label): ?>
+          <div class="col-6">
+            <div class="form-check">
+              <input type="checkbox" name="permissions[]" value="<?= e($code) ?>" class="form-check-input" id="perm_<?= e($code) ?>" <?= in_array($code, $userPermissions, true) ? 'checked' : '' ?>>
+              <label class="form-check-label" for="perm_<?= e($code) ?>"><?= e($label) ?></label>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
     </div>
     <div class="mb-3">
       <label class="form-label">Status</label>
@@ -78,5 +95,17 @@ require __DIR__ . '/includes/header.php';
     <a href="users.php" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
+
+<script>
+(function () {
+  var roleSelect = document.getElementById('roleSelect');
+  var block = document.getElementById('permissionsBlock');
+  function toggle() {
+    block.style.opacity = roleSelect.value === 'admin' ? '.4' : '1';
+  }
+  roleSelect.addEventListener('change', toggle);
+  toggle();
+})();
+</script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

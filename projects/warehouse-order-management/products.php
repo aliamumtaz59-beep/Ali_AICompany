@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Product.php';
-require_login();
+require_permission('products.view');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle') {
-    require_admin();
+    require_permission('products.manage');
     verify_csrf();
     Product::toggleStatus((int)$_POST['id']);
     flash('success', 'Product status updated.');
@@ -41,7 +41,7 @@ ob_start();
         <td><span class="badge bg-<?= $p['status']==='active'?'success':'secondary' ?>"><?= e($p['status']) ?></span></td>
         <td><?= e(format_date($p['updated_at'])) ?></td>
         <td>
-          <?php if (current_user()['role'] === 'admin'): ?>
+          <?php if (user_has_permission('products.manage')): ?>
           <a href="product_form.php?id=<?= (int)$p['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
           <form method="post" class="d-inline">
             <?= csrf_field() ?>
@@ -81,7 +81,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
   </form>
-  <?php if (current_user()['role'] === 'admin'): ?>
+  <?php if (user_has_permission('products.manage')): ?>
   <a href="product_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Product</a>
   <?php endif; ?>
 </div>

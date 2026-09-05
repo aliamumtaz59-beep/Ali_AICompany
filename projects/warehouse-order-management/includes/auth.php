@@ -13,15 +13,6 @@ function require_login(): void
     }
 }
 
-function require_admin(): void
-{
-    require_login();
-    if (current_user()['role'] !== 'admin') {
-        http_response_code(403);
-        die('Access denied. Admin privileges required.');
-    }
-}
-
 function attempt_login(string $username, string $password): bool
 {
     $stmt = db()->prepare("SELECT * FROM users WHERE username = ? AND status = 'active' LIMIT 1");
@@ -35,6 +26,7 @@ function attempt_login(string $username, string $password): bool
             'name' => $user['name'],
             'username' => $user['username'],
             'role' => $user['role'],
+            'permissions' => json_decode($user['permissions'] ?? '', true) ?: [],
         ];
         return true;
     }

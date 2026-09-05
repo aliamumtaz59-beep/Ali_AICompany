@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Product.php';
 require_once __DIR__ . '/models/Shop.php';
-require_admin();
+require_permission('products.manage');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
 $product = $id ? Product::find($id) : null;

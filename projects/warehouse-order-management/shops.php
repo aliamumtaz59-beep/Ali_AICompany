@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Shop.php';
-require_login();
+require_permission('shops.view');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle') {
-    require_admin();
+    require_permission('shops.manage');
     verify_csrf();
     Shop::toggleStatus((int)$_POST['id']);
     flash('success', 'Shop status updated.');
@@ -30,7 +30,7 @@ ob_start();
         <td><?= e($s['contact_number']) ?></td>
         <td><span class="badge bg-<?= $s['status']==='active'?'success':'secondary' ?>"><?= e($s['status']) ?></span></td>
         <td>
-          <?php if (current_user()['role'] === 'admin'): ?>
+          <?php if (user_has_permission('shops.manage')): ?>
           <a href="shop_form.php?id=<?= (int)$s['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
           <form method="post" class="d-inline">
             <?= csrf_field() ?>
@@ -70,7 +70,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
   </form>
-  <?php if (current_user()['role'] === 'admin'): ?>
+  <?php if (user_has_permission('shops.manage')): ?>
   <a href="shop_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Shop</a>
   <?php endif; ?>
 </div>

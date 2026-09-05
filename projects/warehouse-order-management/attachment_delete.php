@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Attachment.php';
-require_login();
+require_permission('orders.manage');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();

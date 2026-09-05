@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Shop.php';
 require_once __DIR__ . '/models/Product.php';
-require_login();
+require_permission('reports.view');
 
 $type = $_GET['type'] ?? 'daily';
 $dateFrom = $_GET['date_from'] ?? date('Y-m-01');

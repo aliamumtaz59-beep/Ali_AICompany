@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../models/Attachment.php';
-require_login();
+require_permission('orders.view');
 
 $attachment = Attachment::find((int)($_GET['id'] ?? 0));
 if (!$attachment) {

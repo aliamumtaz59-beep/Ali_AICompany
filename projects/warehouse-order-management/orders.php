@@ -4,10 +4,10 @@ require_once __DIR__ . '/includes/pagination.php';
 require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Product.php';
 require_once __DIR__ . '/models/Shop.php';
-require_login();
+require_permission('orders.view');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
-    require_admin();
+    require_permission('orders.delete');
     verify_csrf();
     Order::delete((int)$_POST['id']);
     flash('success', 'Order deleted successfully.');
@@ -44,8 +44,10 @@ ob_start();
         <td><?= e(format_date($o['created_at'])) ?></td>
         <td>
           <a href="order_view.php?id=<?= (int)$o['id'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
+          <?php if (user_has_permission('orders.manage')): ?>
           <a href="order_form.php?id=<?= (int)$o['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-          <?php if (current_user()['role'] === 'admin'): ?>
+          <?php endif; ?>
+          <?php if (user_has_permission('orders.delete')): ?>
           <form method="post" class="d-inline confirm-delete-form">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="delete">
@@ -96,7 +98,9 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
   </form>
+  <?php if (user_has_permission('orders.manage')): ?>
   <a href="order_form.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Order</a>
+  <?php endif; ?>
 </div>
 
 <div id="resultsContainer"><?= $resultsHtml ?></div>
