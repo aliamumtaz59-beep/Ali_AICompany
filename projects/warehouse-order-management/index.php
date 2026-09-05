@@ -58,7 +58,8 @@ require __DIR__ . '/includes/header.php';
 
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-4 col-xl-2">
-    <div class="kpi-card kpi-blue">
+    <div class="kpi-card kpi-coral">
+      <i class="bi bi-cart-check kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-cart-check"></i></div>
         <div>
@@ -70,6 +71,7 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-6 col-md-4 col-xl-2">
     <div class="kpi-card kpi-green">
+      <i class="bi bi-boxes kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-boxes"></i></div>
         <div>
@@ -81,6 +83,7 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-6 col-md-4 col-xl-2">
     <div class="kpi-card kpi-purple">
+      <i class="bi bi-calendar-month kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-calendar-month"></i></div>
         <div>
@@ -92,6 +95,7 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-6 col-md-4 col-xl-2">
     <div class="kpi-card kpi-orange">
+      <i class="bi bi-graph-up-arrow kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
         <div>
@@ -103,6 +107,7 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-6 col-md-4 col-xl-2">
     <div class="kpi-card kpi-teal">
+      <i class="bi bi-box-seam kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
         <div>
@@ -114,6 +119,7 @@ require __DIR__ . '/includes/header.php';
   </div>
   <div class="col-6 col-md-4 col-xl-2">
     <div class="kpi-card kpi-indigo">
+      <i class="bi bi-shop kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
         <div class="kpi-icon"><i class="bi bi-shop"></i></div>
         <div>
@@ -127,19 +133,19 @@ require __DIR__ . '/includes/header.php';
 
 <div class="row g-3 mb-4">
   <div class="col-md-5">
-    <div class="chart-card">
+    <div class="chart-card accent-blue">
       <h6><i class="bi bi-graph-up text-primary"></i> Order Trend (<?= e(format_date($dateFrom)) ?> - <?= e(format_date($dateTo)) ?>)</h6>
       <canvas id="trendChart" height="140"></canvas>
     </div>
   </div>
   <div class="col-md-4">
-    <div class="chart-card">
+    <div class="chart-card accent-green">
       <h6><i class="bi bi-bar-chart-fill text-success"></i> Top Products (Quantity)</h6>
       <canvas id="productChart" height="140"></canvas>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="chart-card">
+    <div class="chart-card accent-coral">
       <h6><i class="bi bi-shop text-purple"></i> Sales by Shop</h6>
       <canvas id="shopChart" height="140"></canvas>
     </div>
