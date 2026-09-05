@@ -24,6 +24,7 @@
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['products.php','product_form.php'])?' active':'' ?>" href="products.php"><i class="bi bi-box-seam"></i> Products</a></li>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['shops.php','shop_form.php'])?' active':'' ?>" href="shops.php"><i class="bi bi-shop"></i> Shops</a></li>
       <li class="nav-item"><a class="nav-link<?= $currentPage==='reports.php'?' active':'' ?>" href="reports.php"><i class="bi bi-bar-chart"></i> Reports</a></li>
+      <li class="nav-item"><a class="nav-link<?= $currentPage==='report_detailed.php'?' active':'' ?>" href="report_detailed.php"><i class="bi bi-list-columns-reverse"></i> Detailed Report</a></li>
       <?php if ($user && $user['role'] === 'admin'): ?>
       <li class="nav-item"><a class="nav-link<?= in_array($currentPage,['users.php','user_form.php'])?' active':'' ?>" href="users.php"><i class="bi bi-people"></i> Users</a></li>
       <?php endif; ?>
