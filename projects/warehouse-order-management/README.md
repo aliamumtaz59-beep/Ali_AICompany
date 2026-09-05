@@ -27,3 +27,5 @@ Simple PHP 8.2+ / MySQL 8+ MVP for recording and reporting warehouse orders.
 - Product stock is tracked via `products.quantity_pcs` (opening/total quantity); "Remaining Quantity" is always computed live (quantity_pcs minus everything ordered so far) rather than stored, so it's automatically correct after any order is added, edited, or deleted.
 - Product images are stored under `public/uploads/products/` (publicly servable, unlike order attachments — product photos aren't sensitive) and shown as thumbnails on the Products list and Order view page.
 - All `<select>` dropdowns are searchable (type to filter) via Tom Select, loaded from CDN in `includes/header.php`/`footer.php`.
+- Reports has a "Detailed Report (Line Items)" type showing every order line (date, order #, shop, shop ID, product, barcode, quantity, unit) filterable by shop and product, in addition to the existing daily/monthly/product/custom reports.
+- The dashboard is clickable throughout: KPI cards, chart bars/segments/points, and table rows link to the relevant filtered Orders/Products/Shops list.

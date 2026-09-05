@@ -58,6 +58,7 @@ require __DIR__ . '/includes/header.php';
 
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="orders.php?date_from=<?= e($today) ?>&date_to=<?= e($today) ?>">
     <div class="kpi-card kpi-coral">
       <i class="bi bi-cart-check kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -68,8 +69,10 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="orders.php?date_from=<?= e($today) ?>&date_to=<?= e($today) ?>">
     <div class="kpi-card kpi-green">
       <i class="bi bi-boxes kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -80,8 +83,10 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="orders.php?date_from=<?= e(date('Y-m-01')) ?>&date_to=<?= e($today) ?>">
     <div class="kpi-card kpi-purple">
       <i class="bi bi-calendar-month kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -92,8 +97,10 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="orders.php?date_from=<?= e(date('Y-m-01')) ?>&date_to=<?= e($today) ?>">
     <div class="kpi-card kpi-orange">
       <i class="bi bi-graph-up-arrow kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -104,8 +111,10 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="products.php?status=active">
     <div class="kpi-card kpi-teal">
       <i class="bi bi-box-seam kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -116,8 +125,10 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
   <div class="col-6 col-md-4 col-xl-2">
+    <a class="text-decoration-none" href="shops.php?status=active">
     <div class="kpi-card kpi-indigo">
       <i class="bi bi-shop kpi-bg-icon"></i>
       <div class="d-flex align-items-center gap-3">
@@ -128,6 +139,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
+    </a>
   </div>
 </div>
 
@@ -160,7 +172,7 @@ require __DIR__ . '/includes/header.php';
         <thead><tr><th>Product</th><th class="text-end">Orders</th><th class="text-end">Qty</th></tr></thead>
         <tbody>
         <?php foreach ($topProducts as $p): ?>
-          <tr><td><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></td><td class="text-end"><?= (int)$p['order_count'] ?></td><td class="text-end"><?= number_format($p['total_qty'],2) ?></td></tr>
+          <tr><td><a href="orders.php?product_id=<?= (int)$p['id'] ?>"><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></a></td><td class="text-end"><?= (int)$p['order_count'] ?></td><td class="text-end"><?= number_format($p['total_qty'],2) ?></td></tr>
         <?php endforeach; ?>
         <?php if (!$topProducts): ?><tr><td colspan="3" class="text-center text-muted">No data</td></tr><?php endif; ?>
         </tbody>
@@ -177,7 +189,7 @@ require __DIR__ . '/includes/header.php';
           <tr>
             <td><a href="order_view.php?id=<?= (int)$o['id'] ?>"><?= e($o['order_number']) ?></a></td>
             <td><?= e(format_date($o['order_date'])) ?></td>
-            <td><?= e($o['shop_name']) ?></td>
+            <td><?php if ($o['shop_id']): ?><a href="orders.php?shop_id=<?= (int)$o['shop_id'] ?>"><?= e($o['shop_name']) ?></a><?php endif; ?></td>
             <td class="text-end"><?= number_format($o['total_quantity'],2) ?></td>
           </tr>
         <?php endforeach; ?>
@@ -190,6 +202,10 @@ require __DIR__ . '/includes/header.php';
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
+var trendDates = <?= json_encode(array_map(fn($r) => $r['order_date'], $trend)) ?>;
+var productIds = <?= json_encode(array_map(fn($p) => (int)$p['id'], $topProducts)) ?>;
+var shopIds = <?= json_encode(array_map(fn($s) => (int)$s['id'], $shopSales)) ?>;
+
 new Chart(document.getElementById('trendChart'), {
   type: 'line',
   data: {
@@ -200,19 +216,36 @@ new Chart(document.getElementById('trendChart'), {
       borderColor: '#4facfe', backgroundColor: 'rgba(79,172,254,.15)', tension: .35, fill: true, pointBackgroundColor: '#00c6ff'
     }]
   },
-  options: { responsive: true, plugins: { legend: { display: false } } }
+  options: {
+    responsive: true,
+    onClick: function (evt, elements) {
+      if (!elements.length) return;
+      var date = trendDates[elements[0].index];
+      window.location.href = 'orders.php?date_from=' + date + '&date_to=' + date;
+    },
+    onHover: function (evt, elements) { evt.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+    plugins: { legend: { display: false } }
+  }
 });
 new Chart(document.getElementById('productChart'), {
   type: 'bar',
   data: {
-    labels: <?= json_encode(array_map(fn($p) => $p['product_code'], $topProducts)) ?>,
+    labels: <?= json_encode(array_map(fn($p) => $p['product_code'] . ' - ' . $p['product_name'], $topProducts)) ?>,
     datasets: [{
       label: 'Quantity',
       data: <?= json_encode(array_map(fn($p) => (float)$p['total_qty'], $topProducts)) ?>,
       backgroundColor: ['#4facfe','#43e97b','#fa709a','#a18cd1','#fee140','#30cfd0','#667eea','#f77062','#38f9d7','#feb47b']
     }]
   },
-  options: { responsive: true, plugins: { legend: { display: false } } }
+  options: {
+    responsive: true,
+    onClick: function (evt, elements) {
+      if (!elements.length) return;
+      window.location.href = 'orders.php?product_id=' + productIds[elements[0].index];
+    },
+    onHover: function (evt, elements) { evt.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+    plugins: { legend: { display: false } }
+  }
 });
 new Chart(document.getElementById('shopChart'), {
   type: 'doughnut',
@@ -223,7 +256,15 @@ new Chart(document.getElementById('shopChart'), {
       backgroundColor: ['#4facfe','#43e97b','#fa709a','#a18cd1','#fee140','#30cfd0','#667eea','#f77062','#38f9d7','#feb47b']
     }]
   },
-  options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+  options: {
+    responsive: true,
+    onClick: function (evt, elements) {
+      if (!elements.length) return;
+      window.location.href = 'orders.php?shop_id=' + shopIds[elements[0].index];
+    },
+    onHover: function (evt, elements) { evt.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+  }
 });
 </script>
 

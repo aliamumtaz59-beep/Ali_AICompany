@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/pagination.php';
 require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Product.php';
+require_once __DIR__ . '/models/Shop.php';
 require_login();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
@@ -18,10 +19,12 @@ $filters = [
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
     'product_id' => $_GET['product_id'] ?? '',
+    'shop_id' => $_GET['shop_id'] ?? '',
 ];
 $page = max(1, (int)($_GET['page'] ?? 1));
 $result = Order::paginated($filters, $page);
 $products = Product::active();
+$shops = Shop::active();
 
 $pageTitle = 'Orders';
 require __DIR__ . '/includes/header.php';
@@ -37,6 +40,14 @@ require __DIR__ . '/includes/header.php';
         <option value="">All Products</option>
         <?php foreach ($products as $p): ?>
           <option value="<?= (int)$p['id'] ?>" <?= ($filters['product_id']==$p['id'])?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-auto">
+      <select name="shop_id" class="form-select">
+        <option value="">All Shops</option>
+        <?php foreach ($shops as $s): ?>
+          <option value="<?= (int)$s['id'] ?>" <?= ($filters['shop_id']==$s['id'])?'selected':'' ?>><?= e($s['shop_name']) ?></option>
         <?php endforeach; ?>
       </select>
     </div>

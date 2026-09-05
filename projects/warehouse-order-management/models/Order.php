@@ -109,6 +109,10 @@ class Order
             $where .= " AND EXISTS (SELECT 1 FROM order_items oi2 WHERE oi2.order_id = o.id AND oi2.product_id = ?)";
             $params[] = $filters['product_id'];
         }
+        if (!empty($filters['shop_id'])) {
+            $where .= " AND o.shop_id = ?";
+            $params[] = $filters['shop_id'];
+        }
 
         $countStmt = db()->prepare("SELECT COUNT(*) FROM orders o WHERE $where");
         $countStmt->execute($params);
@@ -173,7 +177,7 @@ class Order
     public static function salesByShop(string $dateFrom, string $dateTo, int $limit = 10): array
     {
         $stmt = db()->prepare("
-            SELECT s.shop_name, COUNT(DISTINCT o.id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
+            SELECT s.id, s.shop_name, COUNT(DISTINCT o.id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
             FROM orders o
             JOIN shops s ON s.id = o.shop_id
             LEFT JOIN order_items oi ON oi.order_id = o.id
@@ -189,7 +193,7 @@ class Order
     public static function topProducts(string $dateFrom, string $dateTo, int $limit = 10): array
     {
         $stmt = db()->prepare("
-            SELECT p.product_code, p.product_name, COUNT(DISTINCT oi.order_id) order_count, SUM(oi.quantity) total_qty
+            SELECT p.id, p.product_code, p.product_name, COUNT(DISTINCT oi.order_id) order_count, SUM(oi.quantity) total_qty
             FROM order_items oi
             JOIN orders o ON o.id = oi.order_id
             JOIN products p ON p.id = oi.product_id
@@ -238,7 +242,7 @@ class Order
     public static function productReport(string $dateFrom, string $dateTo): array
     {
         $stmt = db()->prepare("
-            SELECT p.product_code, p.product_name, COUNT(DISTINCT oi.order_id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
+            SELECT p.id, p.product_code, p.product_name, COUNT(DISTINCT oi.order_id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
             FROM products p
             LEFT JOIN order_items oi ON oi.product_id = p.id
             LEFT JOIN orders o ON o.id = oi.order_id AND o.order_date BETWEEN ? AND ?
@@ -246,6 +250,34 @@ class Order
             ORDER BY total_qty DESC
         ");
         $stmt->execute([$dateFrom, $dateTo]);
+        return $stmt->fetchAll();
+    }
+
+    public static function detailedReport(string $dateFrom, string $dateTo, ?int $shopId = null, ?int $productId = null): array
+    {
+        $where = "o.order_date BETWEEN ? AND ?";
+        $params = [$dateFrom, $dateTo];
+
+        if ($shopId) {
+            $where .= " AND o.shop_id = ?";
+            $params[] = $shopId;
+        }
+        if ($productId) {
+            $where .= " AND oi.product_id = ?";
+            $params[] = $productId;
+        }
+
+        $stmt = db()->prepare("
+            SELECT o.order_date, o.order_number, o.barcode_no, o.shop_id, s.shop_name,
+                p.id AS product_id, p.product_code, p.product_name, oi.quantity, oi.unit
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            LEFT JOIN shops s ON s.id = o.shop_id
+            JOIN products p ON p.id = oi.product_id
+            WHERE $where
+            ORDER BY o.order_date DESC, o.id DESC, oi.id ASC
+        ");
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
