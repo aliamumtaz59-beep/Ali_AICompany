@@ -1,2 +1,4 @@
 uploads/orders/*
 !uploads/orders/.gitkeep
+public/uploads/products/*
+!public/uploads/products/.gitkeep

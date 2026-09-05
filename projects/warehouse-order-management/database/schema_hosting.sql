@@ -31,6 +31,8 @@ CREATE TABLE products (
     description TEXT NULL,
     unit VARCHAR(20) NOT NULL DEFAULT 'PCS',
     shop_id INT NULL,
+    quantity_pcs DECIMAL(12,2) NOT NULL DEFAULT 0,
+    image_path VARCHAR(255) NULL,
     status ENUM('active','inactive') NOT NULL DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -93,7 +95,7 @@ INSERT INTO shops (shop_name, owner_name, contact_number, status) VALUES
 ('Sample Shop', 'Sample Owner', '0000000000', 'active');
 
 -- Sample products
-INSERT INTO products (product_code, product_name, unit, status) VALUES
-('PRD-001','Product A','PCS','active'),
-('PRD-002','Product B','BOX','active'),
-('PRD-003','Product C','KG','active');
+INSERT INTO products (product_code, product_name, unit, quantity_pcs, status) VALUES
+('PRD-001','Product A','PCS',100,'active'),
+('PRD-002','Product B','BOX',100,'active'),
+('PRD-003','Product C','KG',100,'active');

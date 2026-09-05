@@ -1,3 +1,8 @@
+function makeSearchable(select) {
+  if (typeof TomSelect === 'undefined' || select.tomselect || select.classList.contains('no-search')) return;
+  new TomSelect(select, { maxOptions: null });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.getElementById('sidebarToggle');
   if (toggle) {
@@ -13,6 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  document.querySelectorAll('select.form-select').forEach(makeSearchable);
 });
 
 // Order form line management
@@ -20,7 +27,8 @@ function addOrderLine(products) {
   var tbody = document.getElementById('orderItemsBody');
   var idx = tbody.querySelectorAll('tr').length;
   var options = products.map(function (p) {
-    return '<option value="' + p.id + '" data-unit="' + p.unit + '">' + p.product_code + ' - ' + p.product_name + '</option>';
+    var remaining = typeof p.remaining_qty === 'number' ? p.remaining_qty.toFixed(2) : '0.00';
+    return '<option value="' + p.id + '" data-unit="' + p.unit + '">' + p.product_code + ' - ' + p.product_name + ' (Remaining: ' + remaining + ' PCS)</option>';
   }).join('');
   var row = document.createElement('tr');
   row.innerHTML =
@@ -31,6 +39,7 @@ function addOrderLine(products) {
     '<td><input type="text" class="form-control" name="items[' + idx + '][remarks]"></td>' +
     '<td><button type="button" class="btn btn-sm btn-danger remove-line"><i class="bi bi-trash"></i></button></td>';
   tbody.appendChild(row);
+  makeSearchable(row.querySelector('select'));
 }
 
 document.addEventListener('click', function (e) {

@@ -22,14 +22,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'description' => trim($_POST['description'] ?? ''),
         'unit' => trim($_POST['unit'] ?? ''),
         'shop_id' => ((int)($_POST['shop_id'] ?? 0)) ?: null,
+        'quantity_pcs' => (float)($_POST['quantity_pcs'] ?? 0),
         'status' => $_POST['status'] ?? 'active',
     ];
 
     if ($data['product_code'] === '') $errors[] = 'Product code is required.';
     if ($data['product_name'] === '') $errors[] = 'Product name is required.';
     if ($data['unit'] === '') $errors[] = 'Unit is required.';
+    if ($data['quantity_pcs'] < 0) $errors[] = 'Quantity (PCS) cannot be negative.';
     if ($data['product_code'] && Product::codeExists($data['product_code'], $id ?: null)) {
         $errors[] = 'Product code already exists.';
+    }
+
+    if (!$errors) {
+        $imagePath = $product['image_path'] ?? null;
+
+        if (isset($_POST['remove_image'])) {
+            Product::deleteImageFile($imagePath);
+            $imagePath = null;
+        }
+
+        if (!empty($_FILES['image']['name'])) {
+            $result = Product::uploadImage($_FILES['image']);
+            if ($result['error']) {
+                $errors[] = $result['error'];
+            } else {
+                Product::deleteImageFile($imagePath);
+                $imagePath = $result['path'];
+            }
+        }
+
+        $data['image_path'] = $imagePath;
     }
 
     if (!$errors) {
@@ -51,7 +74,7 @@ require __DIR__ . '/includes/header.php';
 
 <div class="stat-card" style="max-width:600px;">
   <?php foreach ($errors as $err): ?><div class="alert alert-danger"><?= e($err) ?></div><?php endforeach; ?>
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
     <input type="hidden" name="id" value="<?= (int)$id ?>">
     <div class="mb-3">
@@ -69,6 +92,32 @@ require __DIR__ . '/includes/header.php';
     <div class="mb-3">
       <label class="form-label">Unit</label>
       <input type="text" name="unit" class="form-control" required value="<?= e($product['unit'] ?? 'PCS') ?>">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Quantity (PCS)</label>
+      <input type="number" step="0.01" min="0" name="quantity_pcs" class="form-control" required value="<?= e((string)($product['quantity_pcs'] ?? '0')) ?>">
+      <div class="form-text">Total stock quantity for this product, in PCS.</div>
+    </div>
+    <?php if ($id): ?>
+    <div class="mb-3">
+      <label class="form-label">Remaining Quantity (PCS)</label>
+      <input type="text" class="form-control" value="<?= e(number_format((float)($product['remaining_qty'] ?? 0), 2)) ?>" disabled>
+      <div class="form-text">Calculated automatically: Quantity (PCS) minus everything ordered so far.</div>
+    </div>
+    <?php endif; ?>
+    <div class="mb-3">
+      <label class="form-label">Product Image</label>
+      <?php if (!empty($product['image_path'])): ?>
+        <div class="mb-2">
+          <img src="<?= e($product['image_path']) ?>" alt="" style="width:100px;height:100px;object-fit:cover;" class="border rounded d-block mb-1">
+          <div class="form-check">
+            <input type="checkbox" name="remove_image" value="1" class="form-check-input" id="removeImage">
+            <label class="form-check-label" for="removeImage">Remove current image</label>
+          </div>
+        </div>
+      <?php endif; ?>
+      <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp">
+      <div class="form-text">Max 5MB. JPG, PNG, GIF, or WEBP.</div>
     </div>
     <div class="mb-3">
       <label class="form-label">Product Owner (Shop)</label>

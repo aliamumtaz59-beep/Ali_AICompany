@@ -77,7 +77,7 @@ class Order
         if (!$order) return null;
 
         $itemStmt = db()->prepare("
-            SELECT oi.*, p.product_code, p.product_name
+            SELECT oi.*, p.product_code, p.product_name, p.image_path
             FROM order_items oi
             JOIN products p ON p.id = oi.product_id
             WHERE oi.order_id = ?

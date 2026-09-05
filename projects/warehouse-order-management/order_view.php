@@ -37,10 +37,17 @@ require __DIR__ . '/includes/header.php';
     </div>
   </div>
   <table class="table table-bordered">
-    <thead><tr><th>Product</th><th class="text-end">Quantity</th><th>Unit</th><th>Remarks</th></tr></thead>
+    <thead><tr><th>Image</th><th>Product</th><th class="text-end">Quantity</th><th>Unit</th><th>Remarks</th></tr></thead>
     <tbody>
     <?php foreach ($order['items'] as $item): ?>
       <tr>
+        <td>
+          <?php if (!empty($item['image_path'])): ?>
+            <img src="<?= e($item['image_path']) ?>" alt="" style="width:40px;height:40px;object-fit:cover;" class="border rounded">
+          <?php else: ?>
+            <span class="text-muted"><i class="bi bi-image"></i></span>
+          <?php endif; ?>
+        </td>
         <td><?= e($item['product_code']) ?> - <?= e($item['product_name']) ?></td>
         <td class="text-end"><?= number_format($item['quantity'], 2) ?></td>
         <td><?= e($item['unit']) ?></td>
@@ -49,7 +56,7 @@ require __DIR__ . '/includes/header.php';
     <?php endforeach; ?>
     </tbody>
     <tfoot>
-      <tr><th>Total</th><th class="text-end"><?= number_format($totalQty, 2) ?></th><th colspan="2"></th></tr>
+      <tr><th colspan="2">Total</th><th class="text-end"><?= number_format($totalQty, 2) ?></th><th colspan="2"></th></tr>
     </tfoot>
   </table>
 

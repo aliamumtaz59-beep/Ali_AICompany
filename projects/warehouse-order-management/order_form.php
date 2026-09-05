@@ -173,7 +173,7 @@ require __DIR__ . '/includes/header.php';
             <select class="form-select product-select" name="items[<?= $idx ?>][product_id]" required>
               <option value="">Select product</option>
               <?php foreach ($activeProducts as $p): ?>
-                <option value="<?= (int)$p['id'] ?>" data-unit="<?= e($p['unit']) ?>" <?= ($item['product_id'] ?? '')==$p['id']?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
+                <option value="<?= (int)$p['id'] ?>" data-unit="<?= e($p['unit']) ?>" <?= ($item['product_id'] ?? '')==$p['id']?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?> (Remaining: <?= number_format($p['remaining_qty'], 2) ?> PCS)</option>
               <?php endforeach; ?>
             </select>
           </td>
@@ -193,7 +193,7 @@ require __DIR__ . '/includes/header.php';
 </div>
 
 <script>
-var activeProducts = <?= json_encode(array_map(fn($p) => ['id'=>$p['id'],'product_code'=>$p['product_code'],'product_name'=>$p['product_name'],'unit'=>$p['unit']], $activeProducts)) ?>;
+var activeProducts = <?= json_encode(array_map(fn($p) => ['id'=>$p['id'],'product_code'=>$p['product_code'],'product_name'=>$p['product_name'],'unit'=>$p['unit'],'remaining_qty'=>(float)$p['remaining_qty']], $activeProducts)) ?>;
 document.getElementById('addLineBtn').addEventListener('click', function () {
   addOrderLine(activeProducts);
 });

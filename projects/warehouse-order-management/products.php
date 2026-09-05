@@ -39,14 +39,23 @@ require __DIR__ . '/includes/header.php';
 <div class="stat-card">
   <table class="table table-hover align-middle">
     <thead>
-      <tr><th>Code</th><th>Name</th><th>Unit</th><th>Owner (Shop)</th><th>Status</th><th>Updated</th><th>Actions</th></tr>
+      <tr><th>Image</th><th>Code</th><th>Name</th><th>Unit</th><th class="text-end">Qty (PCS)</th><th class="text-end">Remaining (PCS)</th><th>Owner (Shop)</th><th>Status</th><th>Updated</th><th>Actions</th></tr>
     </thead>
     <tbody>
     <?php foreach ($products as $p): ?>
       <tr>
+        <td>
+          <?php if (!empty($p['image_path'])): ?>
+            <img src="<?= e($p['image_path']) ?>" alt="" style="width:40px;height:40px;object-fit:cover;" class="border rounded">
+          <?php else: ?>
+            <span class="text-muted"><i class="bi bi-image"></i></span>
+          <?php endif; ?>
+        </td>
         <td><?= e($p['product_code']) ?></td>
         <td><?= e($p['product_name']) ?></td>
         <td><?= e($p['unit']) ?></td>
+        <td class="text-end"><?= number_format($p['quantity_pcs'], 2) ?></td>
+        <td class="text-end <?= $p['remaining_qty'] <= 0 ? 'text-danger fw-bold' : '' ?>"><?= number_format($p['remaining_qty'], 2) ?></td>
         <td><?= e($p['shop_name']) ?></td>
         <td><span class="badge bg-<?= $p['status']==='active'?'success':'secondary' ?>"><?= e($p['status']) ?></span></td>
         <td><?= e(format_date($p['updated_at'])) ?></td>
@@ -63,7 +72,7 @@ require __DIR__ . '/includes/header.php';
         </td>
       </tr>
     <?php endforeach; ?>
-    <?php if (!$products): ?><tr><td colspan="7" class="text-center text-muted">No products found</td></tr><?php endif; ?>
+    <?php if (!$products): ?><tr><td colspan="10" class="text-center text-muted">No products found</td></tr><?php endif; ?>
     </tbody>
   </table>
 </div>
