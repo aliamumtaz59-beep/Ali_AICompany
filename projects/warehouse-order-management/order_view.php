@@ -23,6 +23,9 @@ require __DIR__ . '/includes/header.php';
     <div>
       <h5>Order: <?= e($order['order_number']) ?></h5>
       <div class="text-muted">Order Date: <?= e(format_date($order['order_date'])) ?></div>
+      <?php if ($order['shop_name']): ?>
+      <div class="text-muted">Shop: <?= e($order['shop_name']) ?><?= $order['shop_owner_name'] ? ' - ' . e($order['shop_owner_name']) : '' ?><?= $order['shop_contact_number'] ? ' (' . e($order['shop_contact_number']) . ')' : '' ?></div>
+      <?php endif; ?>
       <div class="text-muted">Created: <?= e(format_date($order['created_at'])) ?></div>
       <?php if ($order['remarks']): ?><div class="text-muted">Remarks: <?= e($order['remarks']) ?></div><?php endif; ?>
       <?php if ($order['barcode_no']): ?><div class="text-muted">Barcode No: <?= e($order['barcode_no']) ?></div><?php endif; ?>

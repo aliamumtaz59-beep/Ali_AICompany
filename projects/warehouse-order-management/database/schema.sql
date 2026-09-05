@@ -13,23 +13,38 @@ CREATE TABLE users (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+CREATE TABLE shops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shop_name VARCHAR(150) NOT NULL,
+    owner_name VARCHAR(150) NULL,
+    contact_number VARCHAR(30) NULL,
+    status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status)
+) ENGINE=InnoDB;
+
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_code VARCHAR(50) NOT NULL UNIQUE,
     product_name VARCHAR(150) NOT NULL,
     description TEXT NULL,
     unit VARCHAR(20) NOT NULL DEFAULT 'PCS',
+    shop_id INT NULL,
     status ENUM('active','inactive') NOT NULL DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_product_code (product_code),
-    INDEX idx_status (status)
+    INDEX idx_status (status),
+    INDEX idx_shop_id (shop_id),
+    FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(50) NOT NULL UNIQUE,
     order_date DATE NOT NULL,
+    shop_id INT NULL,
     barcode_no VARCHAR(100) NULL,
     remarks VARCHAR(255) NULL,
     created_by INT NULL,
@@ -37,7 +52,9 @@ CREATE TABLE orders (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_order_date (order_date),
     INDEX idx_order_number (order_number),
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+    INDEX idx_shop_id (shop_id),
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE order_items (
@@ -70,6 +87,10 @@ CREATE TABLE order_attachments (
 -- Default admin user: username=admin password=Admin@123
 INSERT INTO users (name, username, password_hash, role, status)
 VALUES ('Administrator', 'admin', '$2y$12$KuZXbiuys1ipvWWfOdQQOO5juVHJpuYem7qTSAUn2UGrQCKg7V4Te', 'admin', 'active');
+
+-- Sample shop
+INSERT INTO shops (shop_name, owner_name, contact_number, status) VALUES
+('Sample Shop', 'Sample Owner', '0000000000', 'active');
 
 -- Sample products
 INSERT INTO products (product_code, product_name, unit, status) VALUES

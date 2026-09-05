@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Product.php';
+require_once __DIR__ . '/models/Shop.php';
 require_admin();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
@@ -10,6 +11,8 @@ if ($id && !$product) {
     redirect('products.php');
 }
 
+$activeShops = Shop::active();
+
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -18,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'product_name' => trim($_POST['product_name'] ?? ''),
         'description' => trim($_POST['description'] ?? ''),
         'unit' => trim($_POST['unit'] ?? ''),
+        'shop_id' => ((int)($_POST['shop_id'] ?? 0)) ?: null,
         'status' => $_POST['status'] ?? 'active',
     ];
 
@@ -65,6 +69,15 @@ require __DIR__ . '/includes/header.php';
     <div class="mb-3">
       <label class="form-label">Unit</label>
       <input type="text" name="unit" class="form-control" required value="<?= e($product['unit'] ?? 'PCS') ?>">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Product Owner (Shop)</label>
+      <select name="shop_id" class="form-select">
+        <option value="">None</option>
+        <?php foreach ($activeShops as $s): ?>
+          <option value="<?= (int)$s['id'] ?>" <?= ($product['shop_id'] ?? '')==$s['id']?'selected':'' ?>><?= e($s['shop_name']) ?><?= $s['owner_name'] ? ' - ' . e($s['owner_name']) : '' ?></option>
+        <?php endforeach; ?>
+      </select>
     </div>
     <div class="mb-3">
       <label class="form-label">Status</label>

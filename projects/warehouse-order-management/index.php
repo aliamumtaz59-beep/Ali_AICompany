@@ -36,6 +36,7 @@ switch ($range) {
 $stats = Order::dashboardStats();
 $trend = Order::trend($dateFrom, $dateTo);
 $topProducts = Order::topProducts($dateFrom, $dateTo);
+$shopSales = Order::salesByShop($dateFrom, $dateTo);
 
 $pageTitle = 'Dashboard';
 require __DIR__ . '/includes/header.php';
@@ -56,31 +57,91 @@ require __DIR__ . '/includes/header.php';
 </form>
 
 <div class="row g-3 mb-4">
-  <div class="col-6 col-md-3">
-    <div class="stat-card"><div class="value"><?= (int)$stats['today_orders'] ?></div><div class="label">Today's Orders</div></div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-blue">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-cart-check"></i></div>
+        <div>
+          <div class="kpi-value"><?= (int)$stats['today_orders'] ?></div>
+          <div class="kpi-label">Today's Orders</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-6 col-md-3">
-    <div class="stat-card"><div class="value"><?= number_format($stats['today_qty'], 2) ?></div><div class="label">Today's Quantity</div></div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-green">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-boxes"></i></div>
+        <div>
+          <div class="kpi-value"><?= number_format($stats['today_qty'], 0) ?></div>
+          <div class="kpi-label">Today's Quantity</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-6 col-md-3">
-    <div class="stat-card"><div class="value"><?= (int)$stats['month_orders'] ?></div><div class="label">This Month Orders</div></div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-purple">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-calendar-month"></i></div>
+        <div>
+          <div class="kpi-value"><?= (int)$stats['month_orders'] ?></div>
+          <div class="kpi-label">This Month Orders</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-6 col-md-3">
-    <div class="stat-card"><div class="value"><?= (int)$stats['active_products'] ?></div><div class="label">Active Products</div></div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-orange">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
+        <div>
+          <div class="kpi-value"><?= number_format($stats['month_qty'], 0) ?></div>
+          <div class="kpi-label">This Month Quantity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-teal">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+        <div>
+          <div class="kpi-value"><?= (int)$stats['active_products'] ?></div>
+          <div class="kpi-label">Active Products</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="kpi-card kpi-indigo">
+      <div class="d-flex align-items-center gap-3">
+        <div class="kpi-icon"><i class="bi bi-shop"></i></div>
+        <div>
+          <div class="kpi-value"><?= (int)$stats['active_shops'] ?></div>
+          <div class="kpi-label">Active Shops</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <div class="row g-3 mb-4">
-  <div class="col-md-7">
-    <div class="stat-card">
-      <h6>Order Trend (<?= e(format_date($dateFrom)) ?> - <?= e(format_date($dateTo)) ?>)</h6>
-      <canvas id="trendChart" height="120"></canvas>
+  <div class="col-md-5">
+    <div class="chart-card">
+      <h6><i class="bi bi-graph-up text-primary"></i> Order Trend (<?= e(format_date($dateFrom)) ?> - <?= e(format_date($dateTo)) ?>)</h6>
+      <canvas id="trendChart" height="140"></canvas>
     </div>
   </div>
-  <div class="col-md-5">
-    <div class="stat-card">
-      <h6>Top Products (Quantity)</h6>
-      <canvas id="productChart" height="120"></canvas>
+  <div class="col-md-4">
+    <div class="chart-card">
+      <h6><i class="bi bi-bar-chart-fill text-success"></i> Top Products (Quantity)</h6>
+      <canvas id="productChart" height="140"></canvas>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="chart-card">
+      <h6><i class="bi bi-shop text-purple"></i> Sales by Shop</h6>
+      <canvas id="shopChart" height="140"></canvas>
     </div>
   </div>
 </div>
@@ -104,16 +165,17 @@ require __DIR__ . '/includes/header.php';
     <div class="stat-card">
       <h6>Recent Orders</h6>
       <table class="table table-sm">
-        <thead><tr><th>Order #</th><th>Date</th><th class="text-end">Qty</th></tr></thead>
+        <thead><tr><th>Order #</th><th>Date</th><th>Shop</th><th class="text-end">Qty</th></tr></thead>
         <tbody>
         <?php foreach ($stats['recent_orders'] as $o): ?>
           <tr>
             <td><a href="order_view.php?id=<?= (int)$o['id'] ?>"><?= e($o['order_number']) ?></a></td>
             <td><?= e(format_date($o['order_date'])) ?></td>
+            <td><?= e($o['shop_name']) ?></td>
             <td class="text-end"><?= number_format($o['total_quantity'],2) ?></td>
           </tr>
         <?php endforeach; ?>
-        <?php if (!$stats['recent_orders']): ?><tr><td colspan="3" class="text-center text-muted">No orders yet</td></tr><?php endif; ?>
+        <?php if (!$stats['recent_orders']): ?><tr><td colspan="4" class="text-center text-muted">No orders yet</td></tr><?php endif; ?>
         </tbody>
       </table>
     </div>
@@ -129,7 +191,7 @@ new Chart(document.getElementById('trendChart'), {
     datasets: [{
       label: 'Orders',
       data: <?= json_encode(array_map(fn($r) => (int)$r['orders'], $trend)) ?>,
-      borderColor: '#1e2a38', backgroundColor: 'rgba(30,42,56,.1)', tension: .3, fill: true
+      borderColor: '#4facfe', backgroundColor: 'rgba(79,172,254,.15)', tension: .35, fill: true, pointBackgroundColor: '#00c6ff'
     }]
   },
   options: { responsive: true, plugins: { legend: { display: false } } }
@@ -141,10 +203,21 @@ new Chart(document.getElementById('productChart'), {
     datasets: [{
       label: 'Quantity',
       data: <?= json_encode(array_map(fn($p) => (float)$p['total_qty'], $topProducts)) ?>,
-      backgroundColor: '#0d6efd'
+      backgroundColor: ['#4facfe','#43e97b','#fa709a','#a18cd1','#fee140','#30cfd0','#667eea','#f77062','#38f9d7','#feb47b']
     }]
   },
   options: { responsive: true, plugins: { legend: { display: false } } }
+});
+new Chart(document.getElementById('shopChart'), {
+  type: 'doughnut',
+  data: {
+    labels: <?= json_encode(array_map(fn($s) => $s['shop_name'], $shopSales)) ?>,
+    datasets: [{
+      data: <?= json_encode(array_map(fn($s) => (float)$s['total_qty'], $shopSales)) ?>,
+      backgroundColor: ['#4facfe','#43e97b','#fa709a','#a18cd1','#fee140','#30cfd0','#667eea','#f77062','#38f9d7','#feb47b']
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
 });
 </script>
 

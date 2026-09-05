@@ -48,13 +48,14 @@ require __DIR__ . '/includes/header.php';
 <div class="stat-card">
   <table class="table table-hover align-middle">
     <thead>
-      <tr><th>Order #</th><th>Date</th><th class="text-end">Products</th><th class="text-end">Total Qty</th><th>Created</th><th>Actions</th></tr>
+      <tr><th>Order #</th><th>Date</th><th>Shop</th><th class="text-end">Products</th><th class="text-end">Total Qty</th><th>Created</th><th>Actions</th></tr>
     </thead>
     <tbody>
     <?php foreach ($result['data'] as $o): ?>
       <tr>
         <td><a href="order_view.php?id=<?= (int)$o['id'] ?>"><?= e($o['order_number']) ?></a></td>
         <td><?= e(format_date($o['order_date'])) ?></td>
+        <td><?= e($o['shop_name']) ?></td>
         <td class="text-end"><?= (int)$o['item_count'] ?></td>
         <td class="text-end"><?= number_format($o['total_quantity'], 2) ?></td>
         <td><?= e(format_date($o['created_at'])) ?></td>
@@ -72,7 +73,7 @@ require __DIR__ . '/includes/header.php';
         </td>
       </tr>
     <?php endforeach; ?>
-    <?php if (!$result['data']): ?><tr><td colspan="6" class="text-center text-muted">No orders found</td></tr><?php endif; ?>
+    <?php if (!$result['data']): ?><tr><td colspan="7" class="text-center text-muted">No orders found</td></tr><?php endif; ?>
     </tbody>
   </table>
   <?php render_pagination($page, $result['pages'], array_filter($filters)); ?>

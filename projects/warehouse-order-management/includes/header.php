@@ -19,6 +19,7 @@
       <li class="nav-item"><a class="nav-link" href="index.php"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
       <li class="nav-item"><a class="nav-link" href="orders.php"><i class="bi bi-receipt"></i> Orders</a></li>
       <li class="nav-item"><a class="nav-link" href="products.php"><i class="bi bi-box-seam"></i> Products</a></li>
+      <li class="nav-item"><a class="nav-link" href="shops.php"><i class="bi bi-shop"></i> Shops</a></li>
       <li class="nav-item"><a class="nav-link" href="reports.php"><i class="bi bi-bar-chart"></i> Reports</a></li>
       <?php if ($user && $user['role'] === 'admin'): ?>
       <li class="nav-item"><a class="nav-link" href="users.php"><i class="bi bi-people"></i> Users</a></li>

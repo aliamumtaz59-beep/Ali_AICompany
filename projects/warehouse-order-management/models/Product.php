@@ -4,18 +4,18 @@ class Product
 {
     public static function all(?string $search = null, ?string $status = null): array
     {
-        $sql = "SELECT * FROM products WHERE 1=1";
+        $sql = "SELECT p.*, s.shop_name FROM products p LEFT JOIN shops s ON s.id = p.shop_id WHERE 1=1";
         $params = [];
         if ($search) {
-            $sql .= " AND (product_code LIKE ? OR product_name LIKE ?)";
+            $sql .= " AND (p.product_code LIKE ? OR p.product_name LIKE ?)";
             $params[] = "%$search%";
             $params[] = "%$search%";
         }
         if ($status) {
-            $sql .= " AND status = ?";
+            $sql .= " AND p.status = ?";
             $params[] = $status;
         }
-        $sql .= " ORDER BY product_name ASC";
+        $sql .= " ORDER BY p.product_name ASC";
         $stmt = db()->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -49,15 +49,15 @@ class Product
 
     public static function create(array $data): int
     {
-        $stmt = db()->prepare("INSERT INTO products (product_code, product_name, description, unit, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$data['product_code'], $data['product_name'], $data['description'], $data['unit'], $data['status']]);
+        $stmt = db()->prepare("INSERT INTO products (product_code, product_name, description, unit, shop_id, status) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data['product_code'], $data['product_name'], $data['description'], $data['unit'], $data['shop_id'], $data['status']]);
         return (int) db()->lastInsertId();
     }
 
     public static function update(int $id, array $data): void
     {
-        $stmt = db()->prepare("UPDATE products SET product_code=?, product_name=?, description=?, unit=?, status=? WHERE id=?");
-        $stmt->execute([$data['product_code'], $data['product_name'], $data['description'], $data['unit'], $data['status'], $id]);
+        $stmt = db()->prepare("UPDATE products SET product_code=?, product_name=?, description=?, unit=?, shop_id=?, status=? WHERE id=?");
+        $stmt->execute([$data['product_code'], $data['product_name'], $data['description'], $data['unit'], $data['shop_id'], $data['status'], $id]);
     }
 
     public static function toggleStatus(int $id): void

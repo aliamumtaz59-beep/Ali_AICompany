@@ -20,8 +20,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, barcode_no, remarks, created_by) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['barcode_no'], $header['remarks'], $userId]);
+            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, shop_id, barcode_no, remarks, created_by) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['remarks'], $userId]);
             $orderId = (int) $pdo->lastInsertId();
 
             $itemStmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, unit, remarks) VALUES (?, ?, ?, ?, ?)");
@@ -42,8 +42,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, barcode_no=?, remarks=? WHERE id=?");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['barcode_no'], $header['remarks'], $orderId]);
+            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, shop_id=?, barcode_no=?, remarks=? WHERE id=?");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['remarks'], $orderId]);
 
             $pdo->prepare("DELETE FROM order_items WHERE order_id = ?")->execute([$orderId]);
 
@@ -66,7 +66,12 @@ class Order
 
     public static function find(int $orderId): ?array
     {
-        $stmt = db()->prepare("SELECT * FROM orders WHERE id = ?");
+        $stmt = db()->prepare("
+            SELECT o.*, s.shop_name, s.owner_name AS shop_owner_name, s.contact_number AS shop_contact_number
+            FROM orders o
+            LEFT JOIN shops s ON s.id = o.shop_id
+            WHERE o.id = ?
+        ");
         $stmt->execute([$orderId]);
         $order = $stmt->fetch();
         if (!$order) return null;
@@ -111,10 +116,11 @@ class Order
 
         $offset = max(0, ($page - 1) * $perPage);
         $sql = "
-            SELECT o.*,
+            SELECT o.*, s.shop_name,
                 (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) AS item_count,
                 (SELECT COALESCE(SUM(oi.quantity),0) FROM order_items oi WHERE oi.order_id = o.id) AS total_quantity
             FROM orders o
+            LEFT JOIN shops s ON s.id = o.shop_id
             WHERE $where
             ORDER BY o.order_date DESC, o.id DESC
             LIMIT $perPage OFFSET $offset
@@ -150,14 +156,34 @@ class Order
         $stats['month_qty'] = (float) $row['q'];
 
         $stats['active_products'] = (int) $pdo->query("SELECT COUNT(*) FROM products WHERE status='active'")->fetchColumn();
+        $stats['active_shops'] = (int) $pdo->query("SELECT COUNT(*) FROM shops WHERE status='active'")->fetchColumn();
 
         $stats['recent_orders'] = $pdo->query("
-            SELECT o.*, (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id=o.id) item_count,
+            SELECT o.*, s.shop_name,
+                (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id=o.id) item_count,
                 (SELECT COALESCE(SUM(oi.quantity),0) FROM order_items oi WHERE oi.order_id=o.id) total_quantity
-            FROM orders o ORDER BY o.created_at DESC LIMIT 8
+            FROM orders o
+            LEFT JOIN shops s ON s.id = o.shop_id
+            ORDER BY o.created_at DESC LIMIT 8
         ")->fetchAll();
 
         return $stats;
+    }
+
+    public static function salesByShop(string $dateFrom, string $dateTo, int $limit = 10): array
+    {
+        $stmt = db()->prepare("
+            SELECT s.shop_name, COUNT(DISTINCT o.id) order_count, COALESCE(SUM(oi.quantity),0) total_qty
+            FROM orders o
+            JOIN shops s ON s.id = o.shop_id
+            LEFT JOIN order_items oi ON oi.order_id = o.id
+            WHERE o.order_date BETWEEN ? AND ?
+            GROUP BY s.id
+            ORDER BY total_qty DESC
+            LIMIT $limit
+        ");
+        $stmt->execute([$dateFrom, $dateTo]);
+        return $stmt->fetchAll();
     }
 
     public static function topProducts(string $dateFrom, string $dateTo, int $limit = 10): array

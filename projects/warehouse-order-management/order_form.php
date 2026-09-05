@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/models/Order.php';
 require_once __DIR__ . '/models/Product.php';
 require_once __DIR__ . '/models/Attachment.php';
+require_once __DIR__ . '/models/Shop.php';
 require_login();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : (isset($_POST['id']) ? (int)$_POST['id'] : 0);
@@ -14,6 +15,7 @@ if ($id && !$order) {
 
 $activeProducts = Product::active();
 $activeProductIds = array_column($activeProducts, 'id');
+$activeShops = Shop::active();
 
 $errors = [];
 $formData = null;
@@ -23,12 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $orderNumber = trim($_POST['order_number'] ?? '');
     $orderDate = $_POST['order_date'] ?? '';
+    $shopId = (int)($_POST['shop_id'] ?? 0);
     $barcodeNo = trim($_POST['barcode_no'] ?? '');
     $remarks = trim($_POST['remarks'] ?? '');
     $itemsRaw = $_POST['items'] ?? [];
 
     if ($orderNumber === '') $errors[] = 'Order number is required.';
     if ($orderDate === '') $errors[] = 'Order date is required.';
+    if (!$shopId) $errors[] = 'Shop is required.';
     if (Order::orderNumberExists($orderNumber, $id ?: null)) $errors[] = 'Order number already exists.';
 
     $items = [];
@@ -60,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$items) $errors[] = 'At least one product is required.';
 
     if (!$errors) {
-        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'barcode_no' => $barcodeNo ?: null, 'remarks' => $remarks];
+        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo ?: null, 'remarks' => $remarks];
         if ($id) {
             Order::update($id, $header, $items);
             $orderId = $id;
@@ -78,18 +82,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('orders.php');
     }
 
-    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'barcode_no' => $barcodeNo, 'remarks' => $remarks, 'items' => $itemsRaw];
+    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo, 'remarks' => $remarks, 'items' => $itemsRaw];
 }
 
 $displayOrder = $formData ?? ($order ? [
     'order_number' => $order['order_number'],
     'order_date' => $order['order_date'],
+    'shop_id' => $order['shop_id'],
     'barcode_no' => $order['barcode_no'],
     'remarks' => $order['remarks'],
     'items' => $order['items'],
 ] : [
     'order_number' => generate_order_number(db()),
     'order_date' => date('Y-m-d'),
+    'shop_id' => '',
     'barcode_no' => '',
     'remarks' => '',
     'items' => [['product_id' => '', 'quantity' => '', 'unit' => '', 'remarks' => '']],
@@ -114,16 +120,25 @@ require __DIR__ . '/includes/header.php';
         <input type="date" name="order_date" class="form-control" required value="<?= e($displayOrder['order_date']) ?>">
       </div>
       <div class="col-md-4">
-        <label class="form-label">Remarks</label>
-        <input type="text" name="remarks" class="form-control" value="<?= e($displayOrder['remarks']) ?>">
+        <label class="form-label">Shop</label>
+        <select name="shop_id" class="form-select" required>
+          <option value="">Select shop</option>
+          <?php foreach ($activeShops as $s): ?>
+            <option value="<?= (int)$s['id'] ?>" <?= ($displayOrder['shop_id'] ?? '')==$s['id']?'selected':'' ?>><?= e($s['shop_name']) ?><?= $s['owner_name'] ? ' - ' . e($s['owner_name']) : '' ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
     </div>
     <div class="row g-3 mb-3">
       <div class="col-md-4">
+        <label class="form-label">Remarks</label>
+        <input type="text" name="remarks" class="form-control" value="<?= e($displayOrder['remarks']) ?>">
+      </div>
+      <div class="col-md-4">
         <label class="form-label">Barcode No</label>
         <input type="text" name="barcode_no" class="form-control" placeholder="Scan or type barcode" value="<?= e($displayOrder['barcode_no'] ?? '') ?>">
       </div>
-      <div class="col-md-8">
+      <div class="col-md-4">
         <label class="form-label">Attachments (support file / image of order)</label>
         <input type="file" name="attachments[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt">
         <div class="form-text">Max 10MB per file. Allowed: images, PDF, Word, Excel, text files.</div>
