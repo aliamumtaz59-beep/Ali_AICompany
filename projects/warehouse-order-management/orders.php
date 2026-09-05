@@ -36,7 +36,7 @@ require __DIR__ . '/includes/header.php';
       <select name="product_id" class="form-select">
         <option value="">All Products</option>
         <?php foreach ($products as $p): ?>
-          <option value="<?= (int)$p['id'] ?>" <?= ($filters['product_id']==$p['id'])?'selected':'' ?>><?= e($p['product_code']) ?></option>
+          <option value="<?= (int)$p['id'] ?>" <?= ($filters['product_id']==$p['id'])?'selected':'' ?>><?= e($p['product_code']) ?> - <?= e($p['product_name']) ?></option>
         <?php endforeach; ?>
       </select>
     </div>

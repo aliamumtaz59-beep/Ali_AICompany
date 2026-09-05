@@ -1,6 +1,14 @@
 function makeSearchable(select) {
   if (typeof TomSelect === 'undefined' || select.tomselect || select.classList.contains('no-search')) return;
-  new TomSelect(select, { maxOptions: null });
+  new TomSelect(select, {
+    maxOptions: null,
+    score: function (search) {
+      var term = search.toLowerCase();
+      return function (item) {
+        return item.text.toLowerCase().indexOf(term) !== -1 ? 1 : 0;
+      };
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
