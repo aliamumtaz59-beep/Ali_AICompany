@@ -145,10 +145,13 @@ require __DIR__ . '/includes/header.php';
         <label class="form-label">TikTok Order Number</label>
         <input type="text" name="tiktok_order_number" class="form-control" placeholder="e.g. TT-2024-001" value="<?= e($displayOrder['tiktok_order_number'] ?? '') ?>">
       </div>
-      <div class="col-md-3">
-        <label class="form-label">Attachments (support file / image of order)</label>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-12">
+        <label class="form-label"><strong>📦 Admin Upload: Barcode File(s)</strong></label>
         <input type="file" name="attachments[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt">
-        <div class="form-text">Max 10MB per file. Allowed: images, PDF, Word, Excel, text files.</div>
+        <div class="form-text">Upload barcode labels, product images, order receipts, or supporting documents. Max 10MB per file.</div>
       </div>
     </div>
 

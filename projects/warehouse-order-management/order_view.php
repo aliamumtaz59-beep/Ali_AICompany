@@ -90,11 +90,35 @@ require __DIR__ . '/includes/header.php';
     </tfoot>
   </table>
 
-  <?php if ($attachments): ?>
+  <?php
+    $orderDocs = array_filter($attachments, fn($a) => ($a['type'] ?? 'order_document') === 'order_document');
+    $shipmentDocs = array_filter($attachments, fn($a) => ($a['type'] ?? 'order_document') === 'shipment_proof');
+  ?>
+
+  <?php if ($orderDocs): ?>
   <hr>
-  <h6>Order Files</h6>
+  <h6>📦 Order Files (Admin Uploaded)</h6>
   <div class="d-flex flex-wrap gap-3">
-    <?php foreach ($attachments as $a): ?>
+    <?php foreach ($orderDocs as $a): ?>
+      <div class="text-center">
+        <?php if (str_starts_with($a['mime_type'] ?? '', 'image/')): ?>
+          <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank">
+            <img src="api/attachment_download.php?id=<?= (int)$a['id'] ?>" alt="<?= e($a['original_name']) ?>" style="max-width:120px;max-height:120px;object-fit:cover;" class="border rounded">
+          </a>
+        <?php else: ?>
+          <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm d-block"><i class="bi bi-file-earmark"></i> File</a>
+        <?php endif; ?>
+        <div class="small text-muted mt-1" style="max-width:120px;overflow-wrap:break-word;"><?= e($a['original_name']) ?></div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($shipmentDocs): ?>
+  <hr>
+  <h6>🚚 Shipment Proof (Warehouse Uploaded)</h6>
+  <div class="d-flex flex-wrap gap-3">
+    <?php foreach ($shipmentDocs as $a): ?>
       <div class="text-center">
         <?php if (str_starts_with($a['mime_type'] ?? '', 'image/')): ?>
           <a href="api/attachment_download.php?id=<?= (int)$a['id'] ?>" target="_blank">
@@ -111,21 +135,31 @@ require __DIR__ . '/includes/header.php';
 
   <?php if (user_has_permission('orders.manage') && $order['status'] === 'pending_dispatch'): ?>
   <hr>
-  <h6>Warehouse - Mark as Shipped</h6>
-  <form method="post" enctype="multipart/form-data" class="row g-3">
+  <div class="alert alert-info mb-3">
+    <strong>🚚 Warehouse User Action Required</strong> - This order is pending dispatch. Complete the form below to mark as shipped.
+  </div>
+  <form method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    <div class="col-md-6">
-      <label class="form-label">Shipment Number / Tracking ID</label>
-      <input type="text" name="shipment_number" class="form-control" placeholder="Enter shipment/tracking number" required>
-      <div class="form-text">e.g. FDX123456789, TCS-PACK-001</div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label"><strong>Shipment Number / Tracking ID</strong></label>
+        <input type="text" name="shipment_number" class="form-control" placeholder="Enter shipment/tracking number" required>
+        <div class="form-text">e.g. FDX123456789, TCS-PACK-001, JNTC-ABC-XYZ</div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label class="form-label">Shipment Proof (Barcode/Label Photo)</label>
-      <input type="file" name="shipment_proof" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
-      <div class="form-text">Upload barcode label, shipping label, or proof of shipment</div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-12">
+        <label class="form-label"><strong>📸 Warehouse Upload: Shipment Proof (Barcode/Label Photo)</strong></label>
+        <input type="file" name="shipment_proof" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
+        <div class="form-text">Upload shipping label barcode, courier barcode, or proof of shipment photo. This proof will be attached to the order record.</div>
+      </div>
     </div>
-    <div class="col-12">
-      <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Mark as Shipped to Customer</button>
+
+    <div class="row g-3">
+      <div class="col-12">
+        <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-check-lg"></i> Mark as Shipped to Customer</button>
+      </div>
     </div>
   </form>
   <?php endif; ?>
