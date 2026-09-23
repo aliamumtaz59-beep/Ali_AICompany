@@ -48,8 +48,15 @@ class Attachment
             return 'Failed to save file "' . $file['name'] . '".';
         }
 
-        $stmt = db()->prepare("INSERT INTO order_attachments (order_id, original_name, stored_name, mime_type, size, type) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$orderId, $file['name'], $storedName, $file['type'], $file['size'], $type]);
+        // Try to insert with type column (new schema), fall back to without if column doesn't exist
+        try {
+            $stmt = db()->prepare("INSERT INTO order_attachments (order_id, original_name, stored_name, mime_type, size, type) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$orderId, $file['name'], $storedName, $file['type'], $file['size'], $type]);
+        } catch (Throwable $e) {
+            // If type column doesn't exist yet, insert without it (backward compatible)
+            $stmt = db()->prepare("INSERT INTO order_attachments (order_id, original_name, stored_name, mime_type, size) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$orderId, $file['name'], $storedName, $file['type'], $file['size']]);
+        }
         return null;
     }
 
