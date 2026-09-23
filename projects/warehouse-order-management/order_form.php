@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderDate = $_POST['order_date'] ?? '';
     $shopId = (int)($_POST['shop_id'] ?? 0);
     $barcodeNo = trim($_POST['barcode_no'] ?? '');
+    $tiktokOrderNumber = trim($_POST['tiktok_order_number'] ?? '');
     $remarks = trim($_POST['remarks'] ?? '');
     $itemsRaw = $_POST['items'] ?? [];
 
@@ -64,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$items) $errors[] = 'At least one product is required.';
 
     if (!$errors) {
-        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo ?: null, 'remarks' => $remarks];
+        $header = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo ?: null, 'tiktok_order_number' => $tiktokOrderNumber ?: null, 'remarks' => $remarks];
         if ($id) {
             Order::update($id, $header, $items);
             $orderId = $id;
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('orders.php');
     }
 
-    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo, 'remarks' => $remarks, 'items' => $itemsRaw];
+    $formData = ['order_number' => $orderNumber, 'order_date' => $orderDate, 'shop_id' => $shopId, 'barcode_no' => $barcodeNo, 'tiktok_order_number' => $tiktokOrderNumber, 'remarks' => $remarks, 'items' => $itemsRaw];
 }
 
 $displayOrder = $formData ?? ($order ? [
@@ -90,6 +91,7 @@ $displayOrder = $formData ?? ($order ? [
     'order_date' => $order['order_date'],
     'shop_id' => $order['shop_id'],
     'barcode_no' => $order['barcode_no'],
+    'tiktok_order_number' => $order['tiktok_order_number'],
     'remarks' => $order['remarks'],
     'items' => $order['items'],
 ] : [
@@ -97,6 +99,7 @@ $displayOrder = $formData ?? ($order ? [
     'order_date' => date('Y-m-d'),
     'shop_id' => '',
     'barcode_no' => '',
+    'tiktok_order_number' => '',
     'remarks' => '',
     'items' => [['product_id' => '', 'quantity' => '', 'unit' => '', 'remarks' => '']],
 ]);
@@ -130,15 +133,19 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
     <div class="row g-3 mb-3">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Remarks</label>
         <input type="text" name="remarks" class="form-control" value="<?= e($displayOrder['remarks']) ?>">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Barcode No</label>
         <input type="text" name="barcode_no" class="form-control" placeholder="Scan or type barcode" value="<?= e($displayOrder['barcode_no'] ?? '') ?>">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <label class="form-label">TikTok Order Number</label>
+        <input type="text" name="tiktok_order_number" class="form-control" placeholder="e.g. TT-2024-001" value="<?= e($displayOrder['tiktok_order_number'] ?? '') ?>">
+      </div>
+      <div class="col-md-3">
         <label class="form-label">Attachments (support file / image of order)</label>
         <input type="file" name="attachments[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt">
         <div class="form-text">Max 10MB per file. Allowed: images, PDF, Word, Excel, text files.</div>

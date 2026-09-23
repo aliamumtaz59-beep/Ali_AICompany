@@ -11,6 +11,27 @@ if (!$order) {
     redirect('orders.php');
 }
 
+// Handle shipment marking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && user_has_permission('orders.manage')) {
+    verify_csrf();
+    $shipmentNumber = trim($_POST['shipment_number'] ?? '');
+    if (!$shipmentNumber) {
+        flash('danger', 'Shipment number is required.');
+    } else {
+        // Mark order as shipped
+        Order::markShipped($id, $shipmentNumber, current_user()['id']);
+
+        // Upload shipment proof if provided
+        foreach (normalize_files($_FILES['shipment_proof'] ?? []) as $file) {
+            $uploadError = Attachment::upload($id, $file, 'shipment_proof');
+            if ($uploadError) flash('warning', $uploadError);
+        }
+
+        flash('success', 'Order marked as shipped to customer.');
+        $order = Order::find($id);
+    }
+}
+
 $totalQty = array_sum(array_column($order['items'], 'quantity'));
 $attachments = Attachment::forOrder($id);
 
@@ -29,6 +50,13 @@ require __DIR__ . '/includes/header.php';
       <div class="text-muted">Created: <?= e(format_date($order['created_at'])) ?></div>
       <?php if ($order['remarks']): ?><div class="text-muted">Remarks: <?= e($order['remarks']) ?></div><?php endif; ?>
       <?php if ($order['barcode_no']): ?><div class="text-muted">Barcode No: <?= e($order['barcode_no']) ?></div><?php endif; ?>
+      <?php if ($order['tiktok_order_number']): ?><div class="text-muted">TikTok Order #: <?= e($order['tiktok_order_number']) ?></div><?php endif; ?>
+      <div class="mt-2">
+        <span class="badge bg-<?= $order['status'] === 'pending_dispatch' ? 'warning' : 'success' ?>">
+          <?= $order['status'] === 'pending_dispatch' ? 'Pending for Dispatch' : 'Shipped to Customer' ?>
+        </span>
+      </div>
+      <?php if ($order['shipment_number']): ?><div class="text-muted">Shipment #: <?= e($order['shipment_number']) ?></div><?php endif; ?>
     </div>
     <div class="d-print-none">
       <?php if (user_has_permission('orders.manage')): ?>
@@ -64,7 +92,7 @@ require __DIR__ . '/includes/header.php';
 
   <?php if ($attachments): ?>
   <hr>
-  <h6>Attachments</h6>
+  <h6>Order Files</h6>
   <div class="d-flex flex-wrap gap-3">
     <?php foreach ($attachments as $a): ?>
       <div class="text-center">
@@ -78,6 +106,35 @@ require __DIR__ . '/includes/header.php';
         <div class="small text-muted mt-1" style="max-width:120px;overflow-wrap:break-word;"><?= e($a['original_name']) ?></div>
       </div>
     <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
+
+  <?php if (user_has_permission('orders.manage') && $order['status'] === 'pending_dispatch'): ?>
+  <hr>
+  <h6>Warehouse - Mark as Shipped</h6>
+  <form method="post" enctype="multipart/form-data" class="row g-3">
+    <?= csrf_field() ?>
+    <div class="col-md-6">
+      <label class="form-label">Shipment Number / Tracking ID</label>
+      <input type="text" name="shipment_number" class="form-control" placeholder="Enter shipment/tracking number" required>
+      <div class="form-text">e.g. FDX123456789, TCS-PACK-001</div>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Shipment Proof (Barcode/Label Photo)</label>
+      <input type="file" name="shipment_proof" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
+      <div class="form-text">Upload barcode label, shipping label, or proof of shipment</div>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Mark as Shipped to Customer</button>
+    </div>
+  </form>
+  <?php endif; ?>
+
+  <?php if ($order['status'] === 'shipped_to_customer'): ?>
+  <hr>
+  <div class="alert alert-success">
+    <strong>Shipped to Customer</strong> on <?= e(format_date($order['updated_at'])) ?><br>
+    Shipment Number: <strong><?= e($order['shipment_number']) ?></strong>
   </div>
   <?php endif; ?>
 </div>

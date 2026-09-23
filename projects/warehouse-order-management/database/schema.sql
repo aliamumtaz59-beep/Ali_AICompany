@@ -49,14 +49,20 @@ CREATE TABLE orders (
     order_date DATE NOT NULL,
     shop_id INT NULL,
     barcode_no VARCHAR(100) NULL,
+    tiktok_order_number VARCHAR(100) NULL,
     remarks VARCHAR(255) NULL,
+    status ENUM('pending_dispatch','shipped_to_customer') NOT NULL DEFAULT 'pending_dispatch',
+    shipment_number VARCHAR(100) NULL,
     created_by INT NULL,
+    updated_by INT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_order_date (order_date),
     INDEX idx_order_number (order_number),
     INDEX idx_shop_id (shop_id),
+    INDEX idx_status (status),
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -82,8 +88,10 @@ CREATE TABLE order_attachments (
     stored_name VARCHAR(255) NOT NULL,
     mime_type VARCHAR(100) NULL,
     size INT UNSIGNED NOT NULL DEFAULT 0,
+    type ENUM('order_document','shipment_proof') NOT NULL DEFAULT 'order_document',
     uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_order_id (order_id),
+    INDEX idx_type (type),
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

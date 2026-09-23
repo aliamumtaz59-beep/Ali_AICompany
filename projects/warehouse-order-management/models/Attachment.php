@@ -24,7 +24,7 @@ class Attachment
     /**
      * Stores an uploaded file for an order. Returns an error message on failure, or null on success.
      */
-    public static function upload(int $orderId, array $file): ?string
+    public static function upload(int $orderId, array $file, string $type = 'order_document'): ?string
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return 'Upload failed for "' . $file['name'] . '".';
@@ -48,8 +48,8 @@ class Attachment
             return 'Failed to save file "' . $file['name'] . '".';
         }
 
-        $stmt = db()->prepare("INSERT INTO order_attachments (order_id, original_name, stored_name, mime_type, size) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$orderId, $file['name'], $storedName, $file['type'], $file['size']]);
+        $stmt = db()->prepare("INSERT INTO order_attachments (order_id, original_name, stored_name, mime_type, size, type) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$orderId, $file['name'], $storedName, $file['type'], $file['size'], $type]);
         return null;
     }
 

@@ -20,8 +20,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, shop_id, barcode_no, remarks, created_by) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['remarks'], $userId]);
+            $stmt = $pdo->prepare("INSERT INTO orders (order_number, order_date, shop_id, barcode_no, tiktok_order_number, remarks, status, created_by) VALUES (?, ?, ?, ?, ?, ?, 'pending_dispatch', ?)");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['tiktok_order_number'] ?? null, $header['remarks'], $userId]);
             $orderId = (int) $pdo->lastInsertId();
 
             $itemStmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, unit, remarks) VALUES (?, ?, ?, ?, ?)");
@@ -42,8 +42,8 @@ class Order
         $pdo = db();
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, shop_id=?, barcode_no=?, remarks=? WHERE id=?");
-            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['remarks'], $orderId]);
+            $stmt = $pdo->prepare("UPDATE orders SET order_number=?, order_date=?, shop_id=?, barcode_no=?, tiktok_order_number=?, remarks=? WHERE id=?");
+            $stmt->execute([$header['order_number'], $header['order_date'], $header['shop_id'], $header['barcode_no'], $header['tiktok_order_number'] ?? null, $header['remarks'], $orderId]);
 
             $pdo->prepare("DELETE FROM order_items WHERE order_id = ?")->execute([$orderId]);
 
@@ -62,6 +62,12 @@ class Order
     public static function delete(int $orderId): void
     {
         db()->prepare("DELETE FROM orders WHERE id = ?")->execute([$orderId]);
+    }
+
+    public static function markShipped(int $orderId, string $shipmentNumber, int $userId): void
+    {
+        $stmt = db()->prepare("UPDATE orders SET status='shipped_to_customer', shipment_number=?, updated_by=? WHERE id=?");
+        $stmt->execute([$shipmentNumber, $userId, $orderId]);
     }
 
     public static function find(int $orderId): ?array
